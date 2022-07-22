@@ -1,0 +1,108 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+ids: 
+  - GeneratorTaskId
+
+types:
+  GeneratorConfig: 
+    properties: 
+      id: string
+      generatorVersion: string
+      customConfig: unknown
+      willDownloadFiles: boolean
+  
+  RegistryOverrides: 
+    properties: 
+      npm: optional<NpmRegistryOverride>
+      maven: optional<MavenRegistryOverride>
+  
+  NpmRegistyOverride: 
+    properties: 
+      registryUrl: string
+      auth: optional<RegistryAuth>
+      scope: string
+  
+  MavenRegistryOverride: 
+    properties: 
+      registryUrl: string
+      auth: optional<RegistryAuth>
+      group: string
+  
+  RegistryAuth: 
+    properties: 
+      username: string
+      password: string
+  
+  FernApiDefinition: 
+    properties: 
+      files: list<File>
+  
+  File: 
+    properties: 
+      path: string
+      contents: string
+
+  DraftRequest: 
+    properties:
+      organizationName: string
+      apiName: string
+      generators: list<GeneratorConfig>
+      apiDefinition: FernApiDefinition
+  DraftResponse: 
+    properties: 
+      taskIds: list<GeneratorTaskId>
+      draftVersion: string
+
+  PromoteRequest: 
+    properties:
+      organizationName: string
+      apiName: string
+      draftVersion:
+        type: string
+        docs: Only draft versions can be promoted
+      generators: list<GeneratorConfig>
+  PromoteResponse: 
+    properties: 
+      taskIds: list<GeneratorTaskId>
+  
+  ReleaseRequest: 
+    properties :
+      organizationName: string
+      apiName: string
+      releaseVersion: 
+        type: string
+        docs: User specified verion for release
+      generators: list<GeneratorConfig>
+  ReleaseResponse: 
+    properties: 
+      taskIds: list<GeneratorTaskId>
+      
+services:
+  http:
+    FernDefinitionRegistryService:
+      auth: none
+      base-path: /fdr
+      endpoints:
+
+        draft:
+          method: POST
+          path: /draft
+          request: DraftRequest
+          response: DraftResponse
+
+        promote:
+          method: POST
+          path: /promote
+          request: PromoteRequest
+          response: PromoteResponse
+
+        release:
+          method: POST
+          path: /release
+          request: ReleaseRequest
+          response: ReleaseResponse
+
+errors:
+  NotFoundError:
+    http:
+      statusCode: 404
