@@ -77,9 +77,15 @@ types:
       outputLocation: OutputLocation
 
   OutputLocation:
-    enum:
-      - REGISTRY
-      - LOCAL
+    union:
+      registry: RegistryOutput
+      local: void
+  
+  RegistryOutput:
+    properties: 
+      customRegistry:
+        type: optional<RegistryConfig>
+        docs: If not provided, artifacts will be published to Fern managed registries.
 
   RawApiDefinition:
     properties:
@@ -110,7 +116,6 @@ types:
       apiName: ApiName
       version: ApiVersion
       generators: list<ReleaseGeneratorConfig>
-      apiDefinition: RawApiDefinition
 
   ReleaseResponse:
     properties:
@@ -121,7 +126,9 @@ types:
       generatorName: GeneratorName
       generatorVersion: GeneratorVersion
       customConfig: unknown
-      registry: RegistryConfig
+      customRegistry:
+        type: optional<RegistryConfig>
+        docs: If not provided, artifacts will be published to Fern managed registries.
 
   RegistryConfig:
     union:
@@ -156,11 +163,16 @@ types:
       includeDrafts:
         type: optional<boolean>
         docs: Defaults to false
+      pageToken: 
+        type: optional<ApiVersion>
+        docs: If specified, will paginate from this version onwards.
 
   ApiVersionsPage:
     properties:
       apis: list<ApiArtifact>
-      pageToken: optional<integer>
+      nextPageToken:
+        type: optional<ApiVersion>
+        docs: If present, another page of API versions exists.
 
 services:
   http:
