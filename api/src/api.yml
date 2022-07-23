@@ -16,7 +16,7 @@ types:
       npm: optional<NpmRegistryOverride>
       maven: optional<MavenRegistryOverride>
   
-  NpmRegistyOverride: 
+  NpmRegistryOverride: 
     properties: 
       registryUrl: string
       auth: optional<RegistryAuth>
@@ -44,34 +44,15 @@ types:
 
   DraftRequest: 
     properties:
-      organizationName: string
-      apiName: string
       generators: list<GeneratorConfig>
       apiDefinition: FernApiDefinition
   DraftResponse: 
     properties: 
       taskIds: list<GeneratorTaskId>
       draftVersion: string
-
-  PromoteRequest: 
-    properties:
-      organizationName: string
-      apiName: string
-      draftVersion:
-        type: string
-        docs: Only draft versions can be promoted
-      generators: list<GeneratorConfig>
-  PromoteResponse: 
-    properties: 
-      taskIds: list<GeneratorTaskId>
   
   ReleaseRequest: 
     properties :
-      organizationName: string
-      apiName: string
-      releaseVersion: 
-        type: string
-        docs: User specified verion for release
       generators: list<GeneratorConfig>
   ReleaseResponse: 
     properties: 
@@ -83,26 +64,44 @@ services:
       auth: none
       base-path: /fdr
       endpoints:
-
         draft:
           method: POST
-          path: /draft
+          path: /{orgName}/{apiName}/draft
+          path-parameters:
+            orgName: string
+            apiName: string
           request: DraftRequest
           response: DraftResponse
+          errors: 
+            - OrgDoesNotExist
 
         promote:
           method: POST
-          path: /promote
-          request: PromoteRequest
-          response: PromoteResponse
+          path: /{orgName}/{apiName}/{draftVersion}/promote
+          path-parameters:
+            orgName: string
+            apiName: string
+            draftVersion: string
+          errors: 
+            - DraftVersionDoesNotExist
+            - OrgDoesNotExist
 
         release:
           method: POST
-          path: /release
+          path: /{orgName}/{apiName}/{releaseVersion}/release
+          path-parameters:
+            orgName: string
+            apiName: string
+            releaseVersion: string
           request: ReleaseRequest
           response: ReleaseResponse
+          errors: 
+            - OrgDoesNotExist
 
 errors:
-  NotFoundError:
-    http:
+  DraftVersionDoesNotExist: 
+    http: 
+      statusCode: 404
+  OrgDoesNotExist:
+    http: 
       statusCode: 404
