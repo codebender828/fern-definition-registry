@@ -1,143 +1,228 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
-ids: 
+ids:
   - GeneratorTaskId
-
 types:
-  GeneratorConfig: 
-    properties: 
-      id: string
-      generatorVersion: string
+  ############
+  # Artifact #
+  ############
+
+  ApiName: string
+  ApiVersion: string
+  EnvironmentName: string
+
+  ApiArtifact:
+    properties:
+      name: ApiName
+      version: ApiVersion
+      createdAt: datetime
+      draftInfo: DraftInfo
+      releaseInfo: optional<ReleaseInfo>
+      deployments: map<EnvironmentName, DeploymentInfo>
+
+  DraftInfo:
+    properties:
+      taskIds: list<GeneratorTaskId>
+      promotion: optional<PromotionInfo>
+
+  PromotionInfo:
+    properties:
+      promotedAt: datetime
+      commit: optional<GithubCommit>
+
+  GithubCommit:
+    properties:
+      organization: OrganizationName
+      repoId: string
+      commitHash: string
+
+  ReleaseInfo:
+    properties:
+      releasedAt: datetime
+      taskIds: list<GeneratorTaskId>
+
+  DeploymentInfo:
+    properties:
+      deployedAt: datetime
+
+  ##############
+  # Generation #
+  ##############
+
+  OrganizationName: string
+  GeneratorName: string
+  GeneratorVersion: string
+
+  #####
+  # Draft
+  #####
+
+  DraftRequest:
+    properties:
+      organization: OrganizationName
+      apiName: ApiName
+      generators: list<DraftGeneratorConfig>
+      apiDefinition: RawApiDefinition
+
+  DraftResponse:
+    properties:
+      apiVersion: ApiVersion
+      taskIds: list<GeneratorTaskId>
+
+  DraftGeneratorConfig:
+    properties:
+      generatorName: GeneratorName
+      generatorVersion: GeneratorVersion
       customConfig: unknown
-      willDownloadFiles: boolean
+      outputLocation: OutputLocation
+
+  OutputLocation:
+    union:
+      registry: RegistryOutput
+      local: void
   
-  RegistryOverrides: 
+  RegistryOutput:
     properties: 
-      npm: optional<NpmRegistryOverride>
-      maven: optional<MavenRegistryOverride>
-  
-  NpmRegistryOverride: 
-    properties: 
+      customRegistry:
+        type: optional<RegistryConfig>
+        docs: If not provided, artifacts will be published to Fern managed registries.
+
+  RawApiDefinition:
+    properties:
+      files: list<File>
+
+  File:
+    properties:
+      relativePath: string
+      contents: string
+
+  #####
+  # Promote
+  #####
+
+  PromoteRequest:
+    properties:
+      organization: OrganizationName
+      apiName: ApiName
+      version: ApiVersion
+
+  #####
+  # Release
+  #####
+
+  ReleaseRequest:
+    properties:
+      organization: OrganizationName
+      apiName: ApiName
+      version: ApiVersion
+      generators: list<ReleaseGeneratorConfig>
+
+  ReleaseResponse:
+    properties:
+      taskIds: list<GeneratorTaskId>
+
+  ReleaseGeneratorConfig:
+    properties:
+      generatorName: GeneratorName
+      generatorVersion: GeneratorVersion
+      customConfig: unknown
+      customRegistry:
+        type: optional<RegistryConfig>
+        docs: If not provided, artifacts will be published to Fern managed registries.
+
+  RegistryConfig:
+    union:
+      npm: NpmRegistryConfig
+      maven: MavenRegistryConfig
+
+  NpmRegistryConfig:
+    properties:
       registryUrl: string
       auth: optional<RegistryAuth>
       scope: string
-  
-  MavenRegistryOverride: 
-    properties: 
+
+  MavenRegistryConfig:
+    properties:
       registryUrl: string
       auth: optional<RegistryAuth>
       group: string
-  
-  RegistryAuth: 
-    properties: 
+
+  RegistryAuth:
+    properties:
       username: string
       password: string
-  
-  FernApiDefinition: 
-    properties: 
-      files: list<File>
-  
-  File: 
-    properties: 
-      path: string
-      contents: string
 
-  DraftRequest: 
-    properties:
-      generators: list<GeneratorConfig>
-      apiDefinition: FernApiDefinition
-  DraftResponse: 
-    properties: 
-      taskIds: list<GeneratorTaskId>
-      draftVersion: string
-  
-  ReleaseRequest: 
-    properties:
-      generators: list<GeneratorConfig>
-  ReleaseResponse: 
-    properties: 
-      taskIds: list<GeneratorTaskId>
-  
-  VersionsPage: {}
+  #####
+  # Versions
+  #####
 
-  VersionType: 
-    enum: 
-      - DRAFT
-      - PROMOTED
-      - RELEASE
-  VersionInfo: 
-    properties: 
-      version: string
-      type: VersionType
-      createdTime: datetime
-      generatorTaskIds: list<GeneratorTaskId>
-      
+  GetVersionsRequest:
+    properties:
+      organization: OrganizationName
+      apiName: ApiName
+      includeDrafts:
+        type: optional<boolean>
+        docs: Defaults to false
+      pageToken: 
+        type: optional<ApiVersion>
+        docs: If specified, will paginate from this version onwards.
+
+  ApiVersionsPage:
+    properties:
+      apis: list<ApiArtifact>
+      nextPageToken:
+        type: optional<ApiVersion>
+        docs: If present, another page of API versions exists.
+
 services:
   http:
-    FernDefinitionRegistryService:
+    DefinitionRegistryService:
       auth: none
-      base-path: /fdr
+      base-path: /registry
       endpoints:
         draft:
-          method: POST
-          path: /{orgName}/{apiName}/draft
-          path-parameters:
-            orgName: string
-            apiName: string
           request: DraftRequest
           response: DraftResponse
-          errors: 
-            - OrgDoesNotExist
+          errors:
+            - OrganizationDoesNotExistError
 
         promote:
-          method: POST
-          path: /{orgName}/{apiName}/{draftVersion}/promote
-          path-parameters:
-            orgName: string
-            apiName: string
-            draftVersion: string
-          errors: 
-            - DraftVersionDoesNotExist
-            - OrgDoesNotExist
+          request: PromoteRequest
+          errors:
+            - OrganizationDoesNotExistError
+            - ApiDoesNotExistError
+            - ApiVersionDoesNotExistError
+            - ApiVersionIsAlreadyPromotedError
 
         release:
-          method: POST
-          path: /{orgName}/{apiName}/{releaseVersion}/release
-          path-parameters:
-            orgName: string
-            apiName: string
-            releaseVersion: string
           request: ReleaseRequest
           response: ReleaseResponse
-          errors: 
-            - OrgDoesNotExist
-        
-        getVersions: 
-          method: GET
-          path:  /{orgName}/{apiName}/versions
-          path-parameters:
-            orgName: string
-            apiName: string
-          docs: Returns API versions from most to least recent. 
-          query-parameters: 
-            isRelease:
-              type: optional<boolean>
-              docs: Defaults to true
-          response: Page<Version>
-        
-        getVersionInfo: 
-          method: GET
-          path:  /{orgName}/{apiName}/{version}
-          path-parameters:
-            orgName: string
-            apiName: string
-            version: string
-          response: VersionInfo
+          errors:
+            - OrganizationDoesNotExistError
+            - ApiDoesNotExistError
+            - ApiVersionDoesNotExistError
+            - ApiVersionIsAlreadyReleasedError
+
+        getVersions:
+          request: GetVersionsRequest
+          response: ApiVersionsPage
+          errors:
+            - OrganizationDoesNotExistError
+            - ApiDoesNotExistError
 
 errors:
-  DraftVersionDoesNotExist: 
-    http: 
+  OrganizationDoesNotExistError:
+    http:
       statusCode: 404
-  OrgDoesNotExist:
-    http: 
+  ApiDoesNotExistError:
+    http:
       statusCode: 404
+  ApiVersionDoesNotExistError:
+    http:
+      statusCode: 404
+  ApiVersionIsAlreadyPromotedError:
+    http:
+      statusCode: 400
+  ApiVersionIsAlreadyReleasedError:
+    http:
+      statusCode: 400
