@@ -52,11 +52,25 @@ types:
       draftVersion: string
   
   ReleaseRequest: 
-    properties :
+    properties:
       generators: list<GeneratorConfig>
   ReleaseResponse: 
     properties: 
       taskIds: list<GeneratorTaskId>
+  
+  VersionsPage: {}
+
+  VersionType: 
+    enum: 
+      - DRAFT
+      - PROMOTED
+      - RELEASE
+  VersionInfo: 
+    properties: 
+      version: string
+      type: VersionType
+      createdTime: datetime
+      generatorTaskIds: list<GeneratorTaskId>
       
 services:
   http:
@@ -97,6 +111,28 @@ services:
           response: ReleaseResponse
           errors: 
             - OrgDoesNotExist
+        
+        getVersions: 
+          method: GET
+          path:  /{orgName}/{apiName}/versions
+          path-parameters:
+            orgName: string
+            apiName: string
+          docs: Returns API versions from most to least recent. 
+          query-parameters: 
+            isRelease:
+              type: optional<boolean>
+              docs: Defaults to true
+          response: Page<Version>
+        
+        getVersionInfo: 
+          method: GET
+          path:  /{orgName}/{apiName}/{version}
+          path-parameters:
+            orgName: string
+            apiName: string
+            version: string
+          response: VersionInfo
 
 errors:
   DraftVersionDoesNotExist: 
