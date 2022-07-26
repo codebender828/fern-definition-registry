@@ -12,3 +12,12 @@ jobs:
       - run:
           command: yarn compile
           name: Compile
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - compile:
+          filters:
+            tags:
+              only: /.*/
