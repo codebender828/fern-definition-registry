@@ -9,6 +9,7 @@
     "lib"
   ],
   "dependencies": {
+    "@fern-fern/fern-definition-registry-api-server": "0.0.2",
     "express": "^4.18.1"
   },
   "devDependencies": {
