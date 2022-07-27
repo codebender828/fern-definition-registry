@@ -10,6 +10,10 @@ import {
 void main();
 
 async function main() {
+  const version = process.env["VERSION"];
+  if (version == null) {
+    throw new Error("Version is not specified!");
+  }
   const environments = await getEnvironments();
   const app = new cdk.App();
   for (const environmentType of Object.keys(environments)) {
@@ -19,6 +23,7 @@ async function main() {
         new FdrDeployStack(
           app,
           `fdr-${environmentType.toLowerCase()}`,
+          version,
           environmentType,
           environments[environmentType],
           {
