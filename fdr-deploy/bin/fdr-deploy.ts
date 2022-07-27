@@ -7,6 +7,7 @@ import {
   EnvironmentType,
 } from "@fern-fern/fern-cloud-resources-api-client/model";
 import fetch from "node-fetch";
+import { Headers } from "node-fetch";
 
 void main();
 
@@ -38,6 +39,7 @@ async function main() {
 }
 
 async function getEnvironments(): Promise<Environments> {
+  fetch;
   const response = await fetch(
     "https://raw.githubusercontent.com/fern-api/fern-cloud/main/env-scoped-resources/environments.json",
     {
