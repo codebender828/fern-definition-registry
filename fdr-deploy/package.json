@@ -1,8 +1,9 @@
 {
   "name": "fdr-deploy",
   "version": "0.1.0",
+  "type": "module",
   "bin": {
-    "fdr-deploy": "bin/fdr-deploy.js"
+    "fdr-deploy": "lib/fdr-deploy.js"
   },
   "scripts": {
     "build": "tsc",

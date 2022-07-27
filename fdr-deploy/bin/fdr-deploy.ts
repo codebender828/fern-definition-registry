@@ -1,7 +1,10 @@
 #!/usr/bin/env node
-import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { FdrDeployStack } from "../lib/fdr-deploy-stack";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore
+import { FdrDeployStack } from "./fdr-deploy-stack.ts";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-ignore
 import {
   Environments,
   EnvironmentType,
@@ -32,6 +35,7 @@ async function main() {
             env: { account: "985111089818", region: "us-east-1" },
           }
         );
+        break;
       default:
         return;
     }

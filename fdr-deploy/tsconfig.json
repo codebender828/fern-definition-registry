@@ -1,31 +1,26 @@
 {
-  "compilerOptions": {
-    "target": "ES2018",
+  "compilerOptions": { 
+    "composite": true, 
+    "outDir": "lib", 
+    "rootDir": "bin", 
     "module": "esnext",
-    "lib": [
-      "ES2018", 
-      "DOM"
-    ],
-    "declaration": true,
-    "strict": true,
+    "target": "esnext",
+    "lib": ["dom", "esnext"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
     "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": false,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
   },
-  "exclude": [
-    "node_modules",
-    "cdk.out"
-  ]
+  "include": ["./bin"],
 }
