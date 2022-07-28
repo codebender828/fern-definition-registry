@@ -1,13 +1,20 @@
 import express from "express";
-import { registryService } from "./registry";
+import { initializeDirectories } from "./initializeDirectories";
+import { registryService } from "./services/registry";
 
-const app = express();
+void main();
 
-app.use(registryService);
+async function main() {
+  await initializeDirectories();
 
-app.get("/health", (_req, res) => {
-  res.status(200).send("Ok");
-});
+  const app = express();
 
-console.log("Listening for requests...");
-app.listen(8080);
+  app.use(registryService);
+
+  app.get("/health", (_req, res) => {
+    res.status(200).send("Ok");
+  });
+
+  console.log("Listening for requests...");
+  app.listen(8080);
+}
