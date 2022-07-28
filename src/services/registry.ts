@@ -1,3 +1,4 @@
+import { ApiVersion } from "@fern-fern/fern-definition-registry-api-server/model";
 import { DefinitionRegistryService } from "@fern-fern/fern-definition-registry-api-server/services";
 import { updateOrCreateApi } from "src/db/apiDao";
 
@@ -10,7 +11,7 @@ export const registryService = DefinitionRegistryService.expressMiddleware({
     return {
       ok: true,
       body: {
-        apiVersion: `0.0.${response.version}`,
+        apiVersion: ApiVersion.of(`0.0.${response.version}`),
         taskIds: [],
       },
     };
