@@ -1,4 +1,4 @@
-import { FDR_PRISMA_CLIENT } from "./prisma";
+import { PrismaClient } from "@prisma/client";
 
 const SEED_CLOCK = 0;
 
@@ -13,16 +13,17 @@ export namespace UpdateOrCreateApi {
 }
 
 export async function updateOrCreateApi(
-  request: UpdateOrCreateApi.Request
+  request: UpdateOrCreateApi.Request,
+  prisma: PrismaClient
 ): Promise<UpdateOrCreateApi.Response> {
-  const apiRow = await FDR_PRISMA_CLIENT.api.findFirst({
+  const apiRow = await prisma.api.findFirst({
     where: {
       apiId: request.apiId,
       orgName: request.orgName,
     },
   });
   if (apiRow == null) {
-    await FDR_PRISMA_CLIENT.api.create({
+    await prisma.api.create({
       data: {
         apiId: request.apiId,
         orgName: request.orgName,
@@ -32,7 +33,7 @@ export async function updateOrCreateApi(
     return { version: `0.0.${SEED_CLOCK}` };
   }
   const updatedClock = apiRow.clock + 1;
-  await FDR_PRISMA_CLIENT.api.update({
+  await prisma.api.update({
     where: {
       apiId_orgName: {
         apiId: request.apiId,

@@ -1,8 +1,12 @@
+import { PrismaClient } from "@prisma/client";
 import { updateOrCreateApi } from "../../db/apiDao";
-import { FDR_PRISMA_CLIENT } from "../../db/prisma";
+
+const testPrismaClient = new PrismaClient({
+  log: ["query", "info", "warn", "error"],
+});
 
 beforeAll(async () => {
-  await FDR_PRISMA_CLIENT.api.create({
+  await testPrismaClient.api.create({
     data: {
       apiId: "dummy-api",
       orgName: "dummy-org",
@@ -12,13 +16,16 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await FDR_PRISMA_CLIENT.$disconnect();
+  await testPrismaClient.$disconnect();
 });
 
 it("create new draft", async () => {
-  const response = updateOrCreateApi({
-    apiId: "dummy-api",
-    orgName: "dummy-org",
-  });
+  const response = updateOrCreateApi(
+    {
+      apiId: "dummy-api",
+      orgName: "dummy-org",
+    },
+    testPrismaClient
+  );
   expect((await response).version).toEqual("0.0.1");
 });
