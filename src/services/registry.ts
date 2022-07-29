@@ -1,6 +1,6 @@
 import { ApiVersion } from "@fern-fern/fern-definition-registry-api-server/model";
 import { DefinitionRegistryService } from "@fern-fern/fern-definition-registry-api-server/services";
-import { updateOrCreateApi } from "src/db/apiDao";
+import { updateOrCreateApi } from "../db/apiDao";
 
 export const registryService = DefinitionRegistryService.expressMiddleware({
   draft: async (request) => {
