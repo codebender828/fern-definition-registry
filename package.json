@@ -37,6 +37,6 @@
     "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",
     "deploy:dev:db": "dotenv -e .env.dev -- yarn prisma migrate deploy",
     "docker:test": "dotenv -e .env.test -- ./create_docker.sh",
-    "docker:dev": "dotenv -e .env.dev -- ./docker/create_docker.sh"
+    "docker:dev": "dotenv -e .env.dev -- ./create_docker.sh"
   }
 }
