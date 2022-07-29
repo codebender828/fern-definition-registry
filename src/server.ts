@@ -1,5 +1,4 @@
-//@ts-expect-error
-import { PrismaClient } from "@prismax/client";
+import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { initializeDirectories } from "./initializeDirectories";
 
@@ -21,9 +20,9 @@ async function main() {
       res.status(200).send("Ok");
     });
 
-    // new PrismaClient({
-    //   log: ["query", "info", "warn", "error"],
-    // });
+    new PrismaClient({
+      log: ["query", "info", "warn", "error"],
+    });
     // app.use(
     //   DefinitionRegistryService.expressMiddleware(getRegistryService(prisma))
     // );

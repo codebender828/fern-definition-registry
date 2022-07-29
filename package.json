@@ -8,6 +8,7 @@
   "files": [
     "lib"
   ],
+  "type": "module",
   "dependencies": {
     "@fern-fern/fdr-db-model-model": "0.0.1",
     "@fern-fern/fern-definition-registry-api-server": "0.0.2",
@@ -35,7 +36,7 @@
     "compile": "tsc --build",
     "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",
     "deploy:dev:db": "dotenv -e .env.dev -- yarn prisma migrate deploy",
-    "docker:test": "dotenv -e .env.test -- ./docker/create_docker.sh",
+    "docker:test": "dotenv -e .env.test -- ./create_docker.sh",
     "docker:dev": "dotenv -e .env.dev -- ./docker/create_docker.sh"
   }
 }
