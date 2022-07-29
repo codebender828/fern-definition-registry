@@ -10,4 +10,4 @@ yarn prisma migrate deploy
 
 yarn jest -i
 
-docker-compose -f src/__test__/compose-db.yml down
+docker-compose -f docker-compose.test.yml down
