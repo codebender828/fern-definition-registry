@@ -5,6 +5,7 @@ ENV DATABASE_URL=$DATABASE_URL
 
 COPY bundle.js /bundle.js
 COPY schema.prisma /schema.prisma
+COPY init.sh /init.sh
 RUN mkdir -p "/opt/var/data"
 
-ENTRYPOINT ["node", "/bundle.js"]
+ENTRYPOINT ["sh", "/init.sh"]
