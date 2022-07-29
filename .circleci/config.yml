@@ -35,7 +35,7 @@ jobs:
       - run:
           command: |
             git_version="$(scripts/git-version.sh)"
-            docker/create_docker.sh "${git_version}"
+            yarn run docker:dev "${git_version}"
             npm install -g aws-cdk
             cd fdr-deploy
             npm install
