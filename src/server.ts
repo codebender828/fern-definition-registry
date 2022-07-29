@@ -22,9 +22,9 @@ async function main() {
     console.log("Listening for requests...");
     app.listen(8080);
 
-    new PrismaClient({
-      log: ["query", "info", "warn", "error"],
-    });
+    // new PrismaClient({
+    //   log: ["query", "info", "warn", "error"],
+    // });
     console.log("Initialized Prisma Client...");
   } catch (e) {
     console.error("Server failed to start...", e);
