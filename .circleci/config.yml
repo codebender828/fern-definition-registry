@@ -25,19 +25,16 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          command: | 
-            yarn prisma generate
-            yarn run compile
+          command: yarn run compile
           name: Compile
       - aws-cli/setup
       - run: 
-          command: | 
-            yarn run deploy:dev:db
+          command: yarn run dev:db:migrate
           name: prisma deploy
       - run:
           command: |
             git_version="$(scripts/git-version.sh)"
-            yarn run docker:dev "${git_version}"
+            yarn run dev:docker "${git_version}"
             npm install -g aws-cdk
             cd fdr-deploy
             npm install

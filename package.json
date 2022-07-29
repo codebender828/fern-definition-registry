@@ -8,7 +8,6 @@
   "files": [
     "lib"
   ],
-  "type": "module",
   "dependencies": {
     "@fern-fern/fdr-db-model-model": "0.0.1",
     "@fern-fern/fern-definition-registry-api-server": "0.0.2",
@@ -35,8 +34,11 @@
     "clean": "rm -rf ./lib && tsc --build --clean",
     "compile": "tsc --build",
     "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",
-    "deploy:dev:db": "dotenv -e .env.dev -- yarn prisma migrate deploy",
-    "docker:local": "dotenv -e .env.test -- ./create_docker.sh local",
-    "docker:dev": "dotenv -e .env.dev -- ./create_docker.sh"
+    "dev:db:migrate": "dotenv -e .env.dev -- yarn prisma migrate deploy",
+    "local:db:migrate": "dotenv -e .env.local -- yarn prisma migrate dev",
+    "local:db:up": "docker-compose -f docker-compose.db.yml up -d",
+    "local:db:down": "docker-compose -f docker-compose.db.yml down -d",
+    "local:docker": "dotenv -e .env.local -- ./create_docker.sh local",
+    "dev:docker": "dotenv -e .env.dev -- ./create_docker.sh"
   }
 }

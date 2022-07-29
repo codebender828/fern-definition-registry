@@ -3,10 +3,17 @@ FROM node:18.1.0-alpine AS builder
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
-COPY package.json .npmrc tsconfig.json /app/
-COPY prisma/ /app/prisma
-RUN cd app && npm install
-COPY src/ /app/src
-RUN cd app && npm run compile
+COPY package.json .npmrc tsconfig.json prisma/ /app/
 
-ENTRYPOINT ["node", "--experimental-modules", "--es-module-specifier-resolution=node", "/app/lib/server.js"]
+WORKDIR /app
+RUN npm install
+COPY src/ src
+RUN npm run compile 
+RUN rm -rf node_modules 
+RUN npm install --production
+
+FROM node:18.1.0-alpine
+
+COPY --from=builder /app /app
+
+ENTRYPOINT ["node", "/app/lib/server.js"]
