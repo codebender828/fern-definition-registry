@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { initializeDirectories } from "./initializeDirectories";
 
@@ -8,10 +9,7 @@ async function main() {
     await initializeDirectories();
     console.log("Initialized Directories...");
 
-    // const prisma = new PrismaClient({
-    //   log: ["query", "info", "warn", "error"],
-    // });
-    // console.log("Initialized Prisma Client...");
+    console.log(process.env);
 
     const app = express();
     app.get("/health", (_req, res) => {
@@ -23,6 +21,11 @@ async function main() {
 
     console.log("Listening for requests...");
     app.listen(8080);
+
+    const prisma = new PrismaClient({
+      log: ["query", "info", "warn", "error"],
+    });
+    console.log("Initialized Prisma Client...");
   } catch (e) {
     console.error("Server failed to start...", e);
   }
