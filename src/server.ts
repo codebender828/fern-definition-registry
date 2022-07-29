@@ -18,12 +18,12 @@ async function main() {
       res.status(200).send("Ok");
     });
 
-    const prisma = new PrismaClient({
+    new PrismaClient({
       log: ["query", "info", "warn", "error"],
     });
-    app.use(
-      DefinitionRegistryService.expressMiddleware(getRegistryService(prisma))
-    );
+    // app.use(
+    //   DefinitionRegistryService.expressMiddleware(getRegistryService(prisma))
+    // );
 
     console.log("Listening for requests...");
     app.listen(8080);
