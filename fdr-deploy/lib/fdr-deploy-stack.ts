@@ -77,8 +77,8 @@ export class FdrDeployStack extends Stack {
       {
         serviceName: SERVICE_NAME,
         cluster,
-        cpu: 256,
-        memoryLimitMiB: 512,
+        cpu: 512,
+        memoryLimitMiB: 1024,
         desiredCount: 1,
         securityGroups: [fdrSg, efsSg],
         taskImageOptions: {
