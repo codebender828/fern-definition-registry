@@ -22,7 +22,7 @@ async function main() {
     console.log("Listening for requests...");
     app.listen(8080);
 
-    const prisma = new PrismaClient({
+    new PrismaClient({
       log: ["query", "info", "warn", "error"],
     });
     console.log("Initialized Prisma Client...");
