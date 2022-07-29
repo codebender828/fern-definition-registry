@@ -28,6 +28,10 @@ jobs:
           command: yarn run compile
           name: Compile
       - aws-cli/setup
+      - run: 
+          command: | 
+            yarn run deploy:dev:db
+          name: prisma deploy
       - run:
           command: |
             git_version="$(scripts/git-version.sh)"
@@ -51,9 +55,13 @@ workflows:
       - deploy-dev:
           requires: [ compile ]
           filters:
-            branches:
-              only:
-                - main
+            tags:
+              only: /.*/
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
           context:
             - aws
             - github
+            - fern-dev

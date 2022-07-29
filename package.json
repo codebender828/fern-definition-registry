@@ -33,6 +33,7 @@
     "server": "ts-node src/server.ts ",
     "clean": "rm -rf ./lib && tsc --build --clean",
     "compile": "tsc --build",
-    "test": "dotenv -e .env.test -- ./scripts/db-tests.sh"
+    "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",
+    "deploy:dev:db": "dotenv -e .env.dev -- yarn prisma migrate deploy"
   }
 }
