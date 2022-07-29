@@ -11,18 +11,18 @@ async function main() {
     await initializeDirectories();
     console.log("Initialized Directories...");
 
-    const prisma = new PrismaClient({
-      log: ["query", "info", "warn", "error"],
-    });
-    console.log("Initialized Prisma Client...");
+    // const prisma = new PrismaClient({
+    //   log: ["query", "info", "warn", "error"],
+    // });
+    // console.log("Initialized Prisma Client...");
 
     const app = express();
     app.get("/health", (_req, res) => {
       res.status(200).send("Ok");
     });
-    app.use(
-      DefinitionRegistryService.expressMiddleware(getRegistryService(prisma))
-    );
+    // app.use(
+    //   DefinitionRegistryService.expressMiddleware(getRegistryService(prisma))
+    // );
 
     console.log("Listening for requests...");
     app.listen(8080);
