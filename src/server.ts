@@ -4,11 +4,7 @@ import express from "express";
 import { initializeDirectories } from "./initializeDirectories";
 import { getRegistryService } from "./services/registry";
 
-console.log("Before main!!");
-
 void main();
-
-console.log("After main!!");
 
 async function main() {
   try {

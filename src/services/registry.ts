@@ -18,7 +18,7 @@ export function getRegistryService(
       return {
         ok: true,
         body: {
-          apiVersion: ApiVersion.of(`0.0.${response.version}`),
+          apiVersion: ApiVersion.of(response.version),
           taskIds: [],
         },
       };

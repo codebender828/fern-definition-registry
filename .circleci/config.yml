@@ -54,12 +54,9 @@ workflows:
       - deploy-dev:
           requires: [ compile ]
           filters:
-            tags:
-              only: /.*/
-          # filters:
-          #   branches:
-          #     only:
-          #       - main
+            branches:
+              only:
+                - main
           context:
             - aws
             - github
