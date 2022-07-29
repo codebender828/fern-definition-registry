@@ -1,8 +1,5 @@
-import { DefinitionRegistryService } from "@fern-fern/fern-definition-registry-api-server/services";
-import { PrismaClient } from "@prisma/client";
 import express from "express";
 import { initializeDirectories } from "./initializeDirectories";
-import { getRegistryService } from "./services/registry";
 
 void main();
 
