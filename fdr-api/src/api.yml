@@ -34,6 +34,7 @@ types:
   
   ValidApiArtifact: 
     properties:
+      warnings: list<validation.ValidationWarning> 
       draftInfo: DraftInfo
       releaseInfo: optional<ReleaseInfo>
       deployments: map<EnvironmentName, DeploymentInfo>
