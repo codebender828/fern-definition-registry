@@ -2,20 +2,13 @@
 
 types: 
   RelativeFilepath: string
+ 
   NodePath:
     alias: list<string>
     docs: Hierarchical path to root cause
 
-  BaseValidation: 
+  ValidationViolation: 
     properties: 
       relativeFilepath: RelativeFilepath
       nodePath: NodePath
       message: string
-  
-  ValidationWarning: 
-    extends: BaseValidation
-    properties: {}
-
-  ValidationError: 
-    extends: BaseValidation
-    properties: {}

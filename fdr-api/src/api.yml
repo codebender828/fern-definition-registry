@@ -21,6 +21,7 @@ types:
       version: ApiVersion
       createdAt: datetime
       info: ApiArtifactInfo
+      warnings: list<validation.ValidationViolation> 
   
   ApiArtifactInfo: 
     union: 
@@ -29,12 +30,10 @@ types:
   
   InvalidApiArtifact: 
     properties: 
-      warnings: list<validation.ValidationWarning> 
-      errors: list<validation.ValidationError>
+      errors: list<validation.ValidationViolation>
   
   ValidApiArtifact: 
     properties:
-      warnings: list<validation.ValidationWarning> 
       draftInfo: DraftInfo
       releaseInfo: optional<ReleaseInfo>
       deployments: map<EnvironmentName, DeploymentInfo>
@@ -86,6 +85,7 @@ types:
   DraftResponse:
     properties:
       apiVersion: ApiVersion
+      warnings: list<validation.ValidationViolation> 
       taskIds: list<GeneratorTaskId>
 
   DraftGeneratorConfig:
@@ -251,5 +251,5 @@ errors:
       statusCode: 400
     type: 
       properties: 
-        warnings: list<validation.ValidationWarning> 
-        errors: list<validation.ValidationError>
+        warnings: list<validation.ValidationViolation> 
+        errors: list<validation.ValidationViolation>
