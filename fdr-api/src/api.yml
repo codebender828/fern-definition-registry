@@ -1,7 +1,11 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
+imports:
+  validation: validation.yml
+
 ids:
   - GeneratorTaskId
+
 types:
   ############
   # Artifact #
@@ -16,6 +20,20 @@ types:
       name: ApiName
       version: ApiVersion
       createdAt: datetime
+      info: ApiArtifactInfo
+  
+  ApiArtifactInfo: 
+    union: 
+      invalid: InvalidApiArtifact
+      valid: ValidApiArtifact
+  
+  InvalidApiArtifact: 
+    properties: 
+      warnings: list<validation.ValidationWarning> 
+      errors: list<validation.ValidationError>
+  
+  ValidApiArtifact: 
+    properties:
       draftInfo: DraftInfo
       releaseInfo: optional<ReleaseInfo>
       deployments: map<EnvironmentName, DeploymentInfo>
@@ -184,6 +202,7 @@ services:
           request: DraftRequest
           response: DraftResponse
           errors:
+            - InvalidApiDefinitionError
             - OrganizationDoesNotExistError
 
         promote:
@@ -226,3 +245,10 @@ errors:
   ApiVersionIsAlreadyReleasedError:
     http:
       statusCode: 400
+  InvalidApiDefinitionError: 
+    http: 
+      statusCode: 400
+    type: 
+      properties: 
+        warnings: list<validation.ValidationWarning> 
+        errors: list<validation.ValidationError>
