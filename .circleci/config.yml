@@ -57,7 +57,7 @@ workflows:
               only: /.*/
 
       - deploy-dev:
-          requires: [compile]
+          requires: [check]
           filters:
             branches:
               only:
