@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  service: service.yml
+  type: type.yml
+
+service:
+  base-path: /apis
+  auth: false
+  endpoints:
+    register:
+      method: POST
+      path: /{apiId}/{apiVersion}
+      path-parameters:
+        apiId: ApiId
+        apiVersion: ApiVersion
+      request:
+        name: RegisterApiRequest
+        body:
+          properties:
+            services: list<service.ServiceDefinition>
+            types: map<type.TypeId, type.TypeDefinition>
+      response: ApiId
+      errors:
+        - ApiVersionAlreadyExistsError
+
+    getAllApis:
+      method: GET
+      path: ""
+      response: GetAllApisResponse
+
+    getApiAtVersion:
+      method: GET
+      path: /{apiId}/{apiVersion}
+      path-parameters:
+        apiId: ApiId
+        apiVersion: ApiVersion
+      response: ApiDefinition
+      errors:
+        - ApiDoesNotExistError
+        - ApiVersionDoesNotExistError
+
+types:
+  ApiId: string
+
+  ApiVersion: string
+
+  ApiDefinition:
+    properties:
+      id: ApiId
+      version: ApiVersion
+      services: list<service.ServiceDefinition>
+      types: map<type.TypeId, type.TypeDefinition>
+
+  GetAllApisResponse:
+    properties:
+      apis: map<ApiId, LightweightApi>
+  
+  LightweightApi:
+    properties:
+      id: ApiId
+      latestVersion: ApiVersion
+
+errors:
+  ApiVersionAlreadyExistsError:
+    status-code: 409
+  ApiDoesNotExistError:
+    status-code: 404
+  ApiVersionDoesNotExistError:
+    status-code: 404

@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+types:
+  TypeId: string
+
+  TypeDefinition:
+    union:
+      alias: TypeReference
+      enum: EnumType
+      union: UnionType
+      object: ObjectType
+
+  TypeReference:
+    union:
+      primitive: PrimitiveType
+      container: ContainerType
+      unknown: {}
+      reference: TypeId
+      definition: TypeDefinition
+
+  ObjectType:
+    properties:
+      extends: list<TypeId>
+      properties: list<ObjectProperty>
+
+  ObjectProperty:
+    properties:
+      key: string
+      valueType: TypeReference
+
+  PrimitiveType:
+    union:
+      integer: {}
+      double: {}
+      long: {}
+      string: {}
+      boolean: {}
+      datetime: {}
+      uuid: {}
+
+  ContainerType:
+    union:
+      optional: OptionalType
+      list: ListType
+      set: SetType
+      map: MapType
+
+  OptionalType:
+    properties:
+      itemType: TypeReference
+
+  ListType:
+    properties:
+      itemType: TypeReference
+
+  SetType:
+    properties:
+      itemType: TypeReference
+
+  MapType:
+    properties:
+      keyType: TypeReference
+      valueType: TypeReference
+
+  EnumType:
+    properties:
+      values: list<string>
+
+  UnionType:
+    properties:
+      discriminant: string
+      members: list<UnionMember>
+
+  UnionMember:
+    properties:
+      discriminantValue: string
+      additionalProperties: ObjectType

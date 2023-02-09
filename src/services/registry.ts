@@ -1,36 +1,62 @@
-import { ApiVersion } from "@fern-fern/fern-definition-registry-api-server/model";
-import { DefinitionRegistryService } from "@fern-fern/fern-definition-registry-api-server/services";
 import { PrismaClient } from "@prisma/client";
-import { updateOrCreateApi } from "../db/apiDao";
+import { FernRegistry } from "../generated";
+import { RegistryService } from "../generated/api/resources/registry/service/RegistryService";
 
-export function getRegistryService(
-  prisma: PrismaClient
-): DefinitionRegistryService {
-  return {
-    draft: async (request) => {
-      const response = await updateOrCreateApi(
-        {
-          apiId: request.apiName,
-          orgName: request.organization,
-        },
-        prisma
-      );
-      return {
-        ok: true,
-        body: {
-          apiVersion: ApiVersion.of(response.version),
-          taskIds: [],
-        },
-      };
-    },
-    promote: () => {
-      throw new Error("Function not implemented.");
-    },
-    release: () => {
-      throw new Error("Function not implemented.");
-    },
-    getVersions: () => {
-      throw new Error("Function not implemented.");
-    },
-  };
+export function getRegistryService(_prisma: PrismaClient): RegistryService {
+	return new RegistryService({
+		register: () => {
+			throw new Error("Not implemented");
+		},
+		getAllApis: () => {
+			return {
+				apis: {
+					api1: {
+						id: "api1",
+						latestVersion: "1.0",
+					},
+				},
+			};
+		},
+		getApiAtVersion: (request) => {
+			if (request.params.apiId !== "api1") {
+				throw new FernRegistry.ApiDoesNotExistError();
+			}
+			if (request.params.apiVersion !== "1.0") {
+				throw new FernRegistry.ApiVersionDoesNotExistError();
+			}
+			return {
+				id: "api1",
+				version: "1.0",
+				services: [
+					{
+						name: "My Service",
+						endpoints: [
+							{
+								path: {
+									parts: [FernRegistry.EndpointPathPart.literal("/")],
+								},
+								request: FernRegistry.TypeReference.primitive(
+									FernRegistry.PrimitiveType.string()
+								),
+								response: FernRegistry.TypeReference.definition(
+									FernRegistry.TypeDefinition.object({
+										extends: [],
+										properties: [
+											{
+												key: "foo",
+												valueType: FernRegistry.TypeReference.primitive(
+													FernRegistry.PrimitiveType.string()
+												),
+											},
+										],
+									})
+								),
+							},
+						],
+					},
+				],
+				types: {},
+			};
+		},
+	});
 }
