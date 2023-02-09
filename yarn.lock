@@ -2395,6 +2395,11 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
+fern-api@^0.4.18:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/fern-api/-/fern-api-0.4.18.tgz#2d8e812368fa885e03766caabacadf4bedc67e12"
+  integrity sha512-cNovLkr1oOg+v/CoZ7P4JSO3Y6b3uGOPxWR5wRWVAQSW73aNh07M+VuuoZDyBijRY4JZmkq3sMsDOuHwhz8HrA==
+
 figures@3.2.x:
   version "3.2.0"
   resolved "https://registry.npmjs.org/figures/-/figures-3.2.0.tgz"
