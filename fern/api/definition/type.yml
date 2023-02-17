@@ -3,20 +3,19 @@
 types:
   TypeId: string
 
-  TypeDefinition:
+  Type:
     union:
-      alias: TypeReference
+      reference: TypeId
       enum: EnumType
       union: UnionType
+      discriminatedUnion: DiscriminatedUnionType
       object: ObjectType
-
-  TypeReference:
-    union:
       primitive: PrimitiveType
-      container: ContainerType
+      optional: OptionalType
+      list: ListType
+      set: SetType
+      map: MapType
       unknown: {}
-      reference: TypeId
-      definition: TypeDefinition
 
   ObjectType:
     properties:
@@ -26,7 +25,7 @@ types:
   ObjectProperty:
     properties:
       key: string
-      valueType: TypeReference
+      valueType: Type
 
   PrimitiveType:
     union:
@@ -38,35 +37,32 @@ types:
       datetime: {}
       uuid: {}
 
-  ContainerType:
-    union:
-      optional: OptionalType
-      list: ListType
-      set: SetType
-      map: MapType
-
   OptionalType:
     properties:
-      itemType: TypeReference
+      itemType: Type
 
   ListType:
     properties:
-      itemType: TypeReference
+      itemType: Type
 
   SetType:
     properties:
-      itemType: TypeReference
+      itemType: Type
 
   MapType:
     properties:
-      keyType: TypeReference
-      valueType: TypeReference
+      keyType: Type
+      valueType: Type
 
   EnumType:
     properties:
       values: list<string>
 
   UnionType:
+    properties:
+      members: list<Type>
+
+  DiscriminatedUnionType:
     properties:
       discriminant: string
       members: list<UnionMember>

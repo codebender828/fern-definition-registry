@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  type: type.yml
+
+types:
+  EndpointDefinition:
+    properties:
+      id: EndpointId
+      displayName: optional<string>
+      docs: optional<string>
+      path: EndpointPath
+      queryParameters: list<QueryParameter>
+      request: optional<type.Type>
+      response: optional<type.Type>
+
+  EndpointId: string
+
+  EndpointPath:
+    properties:
+      parts: list<EndpointPathPart>
+      pathParameters: list<PathParameter>
+
+  EndpointPathPart:
+    union:
+      literal: string
+      pathParameter: PathParameterKey
+
+  PathParameter:
+    properties:
+      key: PathParameterKey
+      type: type.Type
+
+  PathParameterKey: string
+
+  QueryParameter:
+    properties:
+      key: string
+      type: type.Type

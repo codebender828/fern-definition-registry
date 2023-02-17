@@ -55,6 +55,8 @@ workflows:
           filters:
             tags:
               only: /.*/
+          context:
+            - fern-tokens
 
       - deploy-dev:
           requires: [check]
@@ -66,3 +68,4 @@ workflows:
             - aws
             - github
             - fern-dev
+            - fern-tokens

@@ -1,9 +1,18 @@
-default-group: external
+default-group: server
 groups:
-  external:
+  server:
     generators:
       - name: fernapi/fern-typescript-express
-        version: 0.0.277
+        version: 0.0.279-1-g6dbcf2e9
         output:
           location: local-file-system
           path: ../../src/generated
+      - name: fernapi/fern-typescript-sdk
+        version: 0.0.279
+        output:
+          location: npm
+          url: npm.buildwithfern.com
+          package-name: "@fern-fern/registry"
+        config:
+          useBrandedStringAliases: true
+          neverThrowErrors: true

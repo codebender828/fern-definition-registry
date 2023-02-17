@@ -12,3 +12,6 @@ bundle.js
 
 # generated code
 src/generated
+
+hello
+/goodbye

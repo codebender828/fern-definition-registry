@@ -1,70 +1,61 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  service: service.yml
+  endpoint: endpoint.yml
   type: type.yml
+  environment: environment.yml
 
 service:
   base-path: /apis
   auth: false
   endpoints:
-    register:
-      method: POST
-      path: /{apiId}/{apiVersion}
-      path-parameters:
-        apiId: ApiId
-        apiVersion: ApiVersion
-      request:
-        name: RegisterApiRequest
-        body:
-          properties:
-            services: list<service.ServiceDefinition>
-            types: map<type.TypeId, type.TypeDefinition>
-      response: ApiId
-      errors:
-        - ApiVersionAlreadyExistsError
-
     getAllApis:
       method: GET
       path: ""
       response: GetAllApisResponse
 
-    getApiAtVersion:
+    getApiForEnvironment:
       method: GET
-      path: /{apiId}/{apiVersion}
+      path: /{apiId}/{environment}
       path-parameters:
         apiId: ApiId
-        apiVersion: ApiVersion
+        environment: environment.EnvironmentId
       response: ApiDefinition
       errors:
         - ApiDoesNotExistError
-        - ApiVersionDoesNotExistError
+        - environment.EnvironmentDoesNotExistError
 
 types:
   ApiId: string
 
-  ApiVersion: string
-
   ApiDefinition:
     properties:
-      id: ApiId
-      version: ApiVersion
-      services: list<service.ServiceDefinition>
-      types: map<type.TypeId, type.TypeDefinition>
+      rootPackage: ApiDefinitionPackage
+      types: map<type.TypeId, type.Type>
+      subpackages: map<SubpackageId, ApiDefinitionSubpackage>
+
+  ApiDefinitionPackage:
+    properties:
+      endpoints: list<endpoint.EndpointDefinition>
+      types: list<type.TypeId>
+      subpackages: list<SubpackageId>
+
+  ApiDefinitionSubpackage:
+    extends: ApiDefinitionPackage
+    properties:
+      name: string
+
+  SubpackageId: string
 
   GetAllApisResponse:
     properties:
-      apis: map<ApiId, LightweightApi>
-  
+      apis: list<LightweightApi>
+
   LightweightApi:
     properties:
       id: ApiId
-      latestVersion: ApiVersion
+      deployments: set<environment.EnvironmentId>
 
 errors:
-  ApiVersionAlreadyExistsError:
-    status-code: 409
   ApiDoesNotExistError:
-    status-code: 404
-  ApiVersionDoesNotExistError:
     status-code: 404
