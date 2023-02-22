@@ -36,7 +36,7 @@
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "server": "nodemon src/server.ts ",
+    "dev": "nodemon src/server.ts ",
     "clean": "rm -rf ./lib && tsc --build --clean",
     "compile": "fern generate && tsc --build",
     "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",

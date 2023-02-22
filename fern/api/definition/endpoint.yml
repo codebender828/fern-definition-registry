@@ -2,19 +2,20 @@
 
 imports:
   type: type.yml
+  commons: commons.yml
 
 types:
   EndpointDefinition:
+    extends: commons.WithDocs
     properties:
-      id: EndpointId
-      displayName: optional<string>
-      docs: optional<string>
+      id: string
+      name: optional<string>
       path: EndpointPath
       queryParameters: list<QueryParameter>
+      headers: list<Header>
       request: optional<type.Type>
       response: optional<type.Type>
-
-  EndpointId: string
+      examples: list<ExampleEndpointCall>
 
   EndpointPath:
     properties:
@@ -27,6 +28,7 @@ types:
       pathParameter: PathParameterKey
 
   PathParameter:
+    extends: commons.WithDocs
     properties:
       key: PathParameterKey
       type: type.Type
@@ -34,6 +36,24 @@ types:
   PathParameterKey: string
 
   QueryParameter:
+    extends: commons.WithDocs
     properties:
       key: string
       type: type.Type
+
+  Header:
+    extends: commons.WithDocs
+    properties:
+      key: string
+      type: type.Type
+
+  ExampleEndpointCall:
+    extends: commons.WithDocs
+    properties:
+      url: string
+      pathParameters: map<PathParameterKey, unknown>
+      queryParameters: map<string, unknown>
+      headers: map<string, unknown>
+      requestBody: unknown
+      responseStatusCode: integer
+      responseBody: unknown

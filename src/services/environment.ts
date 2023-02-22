@@ -11,11 +11,11 @@ export function getEnvironmentService(
                 environments: [
                     {
                         id: "production",
-                        displayName: "Production",
+                        name: "Production",
                     },
                     {
                         id: "staging",
-                        displayName: "Staging",
+                        name: "Staging",
                     },
                 ],
             };

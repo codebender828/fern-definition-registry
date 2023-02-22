@@ -14,6 +14,15 @@ service:
       path: ""
       response: GetAllApisResponse
 
+    getApiMetadata:
+      method: GET
+      path: /{apiId}
+      path-parameters:
+        apiId: ApiId
+      response: ApiMetadata
+      errors:
+        - ApiDoesNotExistError
+
     getApiForEnvironment:
       method: GET
       path: /{apiId}/{environment}
@@ -31,7 +40,7 @@ types:
   ApiDefinition:
     properties:
       rootPackage: ApiDefinitionPackage
-      types: map<type.TypeId, type.Type>
+      types: map<type.TypeId, type.TypeDefinition>
       subpackages: map<SubpackageId, ApiDefinitionSubpackage>
 
   ApiDefinitionPackage:
@@ -49,12 +58,17 @@ types:
 
   GetAllApisResponse:
     properties:
-      apis: list<LightweightApi>
+      apis: list<ApiMetadata>
 
-  LightweightApi:
+  ApiMetadata:
     properties:
       id: ApiId
-      deployments: set<environment.EnvironmentId>
+      name: string
+      deployments: map<environment.EnvironmentId, DeploymentInfo>
+
+  DeploymentInfo:
+    properties:
+      registrationTime: datetime
 
 errors:
   ApiDoesNotExistError:

@@ -1,7 +1,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
+imports:
+  commons: commons.yml
+
 types:
   TypeId: string
+
+  TypeDefinition:
+    extends: commons.WithDocs
+    properties:
+      name: string
+      shape: Type
+      examples: list<ExampleType>
 
   Type:
     union:
@@ -23,6 +33,7 @@ types:
       properties: list<ObjectProperty>
 
   ObjectProperty:
+    extends: commons.WithDocs
     properties:
       key: string
       valueType: Type
@@ -56,18 +67,33 @@ types:
 
   EnumType:
     properties:
-      values: list<string>
+      values: list<EnumValue>
+
+  EnumValue:
+    extends: commons.WithDocs
+    properties:
+      value: string
 
   UnionType:
     properties:
-      members: list<Type>
+      members: list<UnionMember>
+
+  UnionMember:
+    extends: commons.WithDocs
+    properties:
+      type: Type
 
   DiscriminatedUnionType:
     properties:
       discriminant: string
-      members: list<UnionMember>
+      members: list<DiscriminatedUnionMember>
 
-  UnionMember:
+  DiscriminatedUnionMember:
+    extends: commons.WithDocs
     properties:
       discriminantValue: string
       additionalProperties: ObjectType
+
+  ExampleType:
+    properties:
+      json: unknown

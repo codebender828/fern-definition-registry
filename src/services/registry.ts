@@ -12,9 +12,34 @@ export function getRegistryService(
                 apis: [
                     {
                         id: "api1",
-                        deployments: new Set(["staging", "production"]),
+                        name: "Authentication Service",
+                        deployments: {
+                            staging: {
+                                registrationTime: new Date(2023, 1, 20),
+                            },
+                            production: {
+                                registrationTime: new Date(2023, 1, 19),
+                            },
+                        },
                     },
                 ],
+            };
+        },
+        getApiMetadata: (request) => {
+            if (request.params.apiId !== "api1") {
+                throw new FernRegistry.ApiDoesNotExistError();
+            }
+            return {
+                id: "api1",
+                name: "Authentication Service",
+                deployments: {
+                    staging: {
+                        registrationTime: new Date(2023, 1, 20),
+                    },
+                    production: {
+                        registrationTime: new Date(2023, 1, 19),
+                    },
+                },
             };
         },
         getApiForEnvironment: (request) => {
@@ -27,17 +52,135 @@ export function getRegistryService(
 
             return {
                 types: {
-                    "type-1": FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                    "type-1": {
+                        name: "type 1",
+                        shape: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                        examples: [],
+                    },
+                    "type-2": {
+                        name: "type 2",
+                        shape: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                        examples: [],
+                    },
+                    "type-3": {
+                        name: "type-3",
+                        shape: FernRegistry.Type.object({
+                            extends: [],
+                            properties: [
+                                {
+                                    key: "foo",
+                                    valueType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                },
+                                {
+                                    key: "bar",
+                                    valueType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                },
+                                {
+                                    key: "bar2",
+                                    valueType: FernRegistry.Type.map({
+                                        keyType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                        valueType: FernRegistry.Type.reference("type-2"),
+                                    }),
+                                },
+                                {
+                                    key: "test",
+                                    valueType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                },
+                                {
+                                    key: "test",
+                                    valueType: FernRegistry.Type.optional({
+                                        itemType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                    }),
+                                },
+                                {
+                                    key: "test",
+                                    valueType: FernRegistry.Type.map({
+                                        keyType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                        valueType: FernRegistry.Type.list({
+                                            itemType: FernRegistry.Type.object({
+                                                extends: [],
+                                                properties: [
+                                                    {
+                                                        key: "foo",
+                                                        valueType: FernRegistry.Type.primitive(
+                                                            FernRegistry.PrimitiveType.string()
+                                                        ),
+                                                    },
+                                                    {
+                                                        key: "bar",
+                                                        valueType: FernRegistry.Type.primitive(
+                                                            FernRegistry.PrimitiveType.string()
+                                                        ),
+                                                    },
+                                                    {
+                                                        key: "baz",
+                                                        valueType: FernRegistry.Type.list({
+                                                            itemType: FernRegistry.Type.primitive(
+                                                                FernRegistry.PrimitiveType.string()
+                                                            ),
+                                                        }),
+                                                    },
+                                                ],
+                                            }),
+                                        }),
+                                    }),
+                                },
+                                {
+                                    key: "baz",
+                                    valueType: FernRegistry.Type.optional({
+                                        itemType: FernRegistry.Type.list({
+                                            itemType: FernRegistry.Type.object({
+                                                extends: [],
+                                                properties: [
+                                                    {
+                                                        key: "foo",
+                                                        valueType: FernRegistry.Type.primitive(
+                                                            FernRegistry.PrimitiveType.string()
+                                                        ),
+                                                    },
+                                                    {
+                                                        key: "bar",
+                                                        valueType: FernRegistry.Type.primitive(
+                                                            FernRegistry.PrimitiveType.string()
+                                                        ),
+                                                    },
+                                                    {
+                                                        key: "baz",
+                                                        valueType: FernRegistry.Type.list({
+                                                            itemType: FernRegistry.Type.primitive(
+                                                                FernRegistry.PrimitiveType.string()
+                                                            ),
+                                                        }),
+                                                    },
+                                                ],
+                                            }),
+                                        }),
+                                    }),
+                                },
+                            ],
+                        }),
+                        examples: [],
+                    },
                 },
                 subpackages: {
                     a: {
                         name: "a",
-                        types: ["type-1"],
+                        types: ["type-1", "type-2"],
                         endpoints: [
                             {
                                 id: "endpoint-1",
-                                displayName: "My Endpoint",
+                                name: "My Endpoint",
                                 docs: "Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see this other page",
+                                headers: [
+                                    {
+                                        key: "X-API-Key",
+                                        type: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                    },
+                                    {
+                                        key: "My-Other-Header",
+                                        type: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                    },
+                                ],
                                 queryParameters: [
                                     {
                                         key: "queryParam1",
@@ -48,6 +191,10 @@ export function getRegistryService(
                                         type: FernRegistry.Type.optional({
                                             itemType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
                                         }),
+                                    },
+                                    {
+                                        key: "queryParam3",
+                                        type: FernRegistry.Type.reference("type-1"),
                                     },
                                 ],
                                 path: {
@@ -72,6 +219,15 @@ export function getRegistryService(
                                         {
                                             key: "bar",
                                             valueType: FernRegistry.Type.primitive(FernRegistry.PrimitiveType.string()),
+                                        },
+                                        {
+                                            key: "bar2",
+                                            valueType: FernRegistry.Type.map({
+                                                keyType: FernRegistry.Type.primitive(
+                                                    FernRegistry.PrimitiveType.string()
+                                                ),
+                                                valueType: FernRegistry.Type.reference("type-2"),
+                                            }),
                                         },
                                         {
                                             key: "test",
@@ -186,23 +342,34 @@ export function getRegistryService(
                                                         key: "bar",
                                                         valueType: FernRegistry.Type.union({
                                                             members: [
-                                                                FernRegistry.Type.enum({
-                                                                    values: ["abc", "def", "ghi", "jkl"],
-                                                                }),
-                                                                FernRegistry.Type.primitive(
-                                                                    FernRegistry.PrimitiveType.string()
-                                                                ),
-                                                                FernRegistry.Type.object({
-                                                                    extends: [],
-                                                                    properties: [
-                                                                        {
-                                                                            key: "foo",
-                                                                            valueType: FernRegistry.Type.primitive(
-                                                                                FernRegistry.PrimitiveType.string()
-                                                                            ),
-                                                                        },
-                                                                    ],
-                                                                }),
+                                                                {
+                                                                    type: FernRegistry.Type.enum({
+                                                                        values: [
+                                                                            { value: "abc" },
+                                                                            { value: "def" },
+                                                                            { value: "ghi" },
+                                                                            { value: "jkl" },
+                                                                        ],
+                                                                    }),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.primitive(
+                                                                        FernRegistry.PrimitiveType.string()
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.object({
+                                                                        extends: [],
+                                                                        properties: [
+                                                                            {
+                                                                                key: "foo",
+                                                                                valueType: FernRegistry.Type.primitive(
+                                                                                    FernRegistry.PrimitiveType.string()
+                                                                                ),
+                                                                            },
+                                                                        ],
+                                                                    }),
+                                                                },
                                                             ],
                                                         }),
                                                     },
@@ -247,6 +414,72 @@ export function getRegistryService(
                                         },
                                     ],
                                 }),
+                                examples: [
+                                    {
+                                        url: "/12345?queryParam1=foo",
+                                        pathParameters: {
+                                            test: 12345,
+                                        },
+                                        queryParameters: {
+                                            queryParam1: "foo",
+                                        },
+                                        headers: {
+                                            "X-API-Key": "my-api-keydaskldjakld",
+                                            "My-Other-Header": "dslajkdlksajdklajdk",
+                                        },
+                                        requestBody: {
+                                            key1: 12346,
+                                            key2: ["a", "dklsad", "ASdads"],
+                                            key3: 12346,
+                                            key4: {
+                                                nested: {
+                                                    object: "HELLO",
+                                                },
+                                            },
+                                            key5: true,
+                                        },
+                                        responseBody: {
+                                            key1: 12346,
+                                            key2: ["a", "dklsad", "ASdads"],
+                                            key3: 12346,
+                                            key4: {
+                                                nested: {
+                                                    object: "HELLO",
+                                                },
+                                            },
+                                            key5: true,
+                                        },
+                                        responseStatusCode: 200,
+                                    },
+                                    {
+                                        url: "/10000?queryParam1=bar",
+                                        pathParameters: {
+                                            test: 10000,
+                                        },
+                                        queryParameters: {
+                                            queryParam1: "bar",
+                                        },
+                                        headers: {
+                                            "X-API-Key": "my-api-saldjaldk",
+                                            "My-Other-Header": "dkasldjaslkd",
+                                        },
+                                        requestBody: {
+                                            key1: 14312,
+                                            key2: ["a", "dklsad", "ASdads"],
+                                            key3: 143213,
+                                            key5: false,
+                                        },
+                                        responseBody: {
+                                            key1: 4433,
+                                            key2: ["a", "dklsad", "ASdads"],
+                                            key3: 12313,
+                                            key4: {
+                                                hello: [],
+                                            },
+                                        },
+                                        responseStatusCode: 200,
+                                    },
+                                ],
                             },
                         ],
                         subpackages: ["b"],
@@ -257,8 +490,9 @@ export function getRegistryService(
                         endpoints: [
                             {
                                 id: "endpoint-1",
-                                displayName: "My Endpoint",
+                                name: "My Endpoint",
                                 docs: "Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see this other page",
+                                headers: [],
                                 queryParameters: [
                                     {
                                         key: "queryParam1",
@@ -407,23 +641,34 @@ export function getRegistryService(
                                                         key: "bar",
                                                         valueType: FernRegistry.Type.union({
                                                             members: [
-                                                                FernRegistry.Type.enum({
-                                                                    values: ["abc", "def", "ghi", "jkl"],
-                                                                }),
-                                                                FernRegistry.Type.primitive(
-                                                                    FernRegistry.PrimitiveType.string()
-                                                                ),
-                                                                FernRegistry.Type.object({
-                                                                    extends: [],
-                                                                    properties: [
-                                                                        {
-                                                                            key: "foo",
-                                                                            valueType: FernRegistry.Type.primitive(
-                                                                                FernRegistry.PrimitiveType.string()
-                                                                            ),
-                                                                        },
-                                                                    ],
-                                                                }),
+                                                                {
+                                                                    type: FernRegistry.Type.enum({
+                                                                        values: [
+                                                                            { value: "abc" },
+                                                                            { value: "def" },
+                                                                            { value: "ghi" },
+                                                                            { value: "jkl" },
+                                                                        ],
+                                                                    }),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.primitive(
+                                                                        FernRegistry.PrimitiveType.string()
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.object({
+                                                                        extends: [],
+                                                                        properties: [
+                                                                            {
+                                                                                key: "foo",
+                                                                                valueType: FernRegistry.Type.primitive(
+                                                                                    FernRegistry.PrimitiveType.string()
+                                                                                ),
+                                                                            },
+                                                                        ],
+                                                                    }),
+                                                                },
                                                             ],
                                                         }),
                                                     },
@@ -468,11 +713,13 @@ export function getRegistryService(
                                         },
                                     ],
                                 }),
+                                examples: [],
                             },
                             {
                                 id: "endpoint-2",
-                                displayName: "My Endpoint",
+                                name: "My Endpoint",
                                 docs: "Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see this other page",
+                                headers: [],
                                 queryParameters: [
                                     {
                                         key: "queryParam1",
@@ -621,23 +868,34 @@ export function getRegistryService(
                                                         key: "bar",
                                                         valueType: FernRegistry.Type.union({
                                                             members: [
-                                                                FernRegistry.Type.enum({
-                                                                    values: ["abc", "def", "ghi", "jkl"],
-                                                                }),
-                                                                FernRegistry.Type.primitive(
-                                                                    FernRegistry.PrimitiveType.string()
-                                                                ),
-                                                                FernRegistry.Type.object({
-                                                                    extends: [],
-                                                                    properties: [
-                                                                        {
-                                                                            key: "foo",
-                                                                            valueType: FernRegistry.Type.primitive(
-                                                                                FernRegistry.PrimitiveType.string()
-                                                                            ),
-                                                                        },
-                                                                    ],
-                                                                }),
+                                                                {
+                                                                    type: FernRegistry.Type.enum({
+                                                                        values: [
+                                                                            { value: "abc" },
+                                                                            { value: "def" },
+                                                                            { value: "ghi" },
+                                                                            { value: "jkl" },
+                                                                        ],
+                                                                    }),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.primitive(
+                                                                        FernRegistry.PrimitiveType.string()
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.object({
+                                                                        extends: [],
+                                                                        properties: [
+                                                                            {
+                                                                                key: "foo",
+                                                                                valueType: FernRegistry.Type.primitive(
+                                                                                    FernRegistry.PrimitiveType.string()
+                                                                                ),
+                                                                            },
+                                                                        ],
+                                                                    }),
+                                                                },
                                                             ],
                                                         }),
                                                     },
@@ -682,6 +940,7 @@ export function getRegistryService(
                                         },
                                     ],
                                 }),
+                                examples: [],
                             },
                         ],
                         subpackages: ["c"],
@@ -692,8 +951,9 @@ export function getRegistryService(
                         endpoints: [
                             {
                                 id: "endpoint-1",
-                                displayName: "My Endpoint",
+                                name: "My Endpoint",
                                 docs: "Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see this other page",
+                                headers: [],
                                 queryParameters: [
                                     {
                                         key: "queryParam1",
@@ -842,23 +1102,34 @@ export function getRegistryService(
                                                         key: "bar",
                                                         valueType: FernRegistry.Type.union({
                                                             members: [
-                                                                FernRegistry.Type.enum({
-                                                                    values: ["abc", "def", "ghi", "jkl"],
-                                                                }),
-                                                                FernRegistry.Type.primitive(
-                                                                    FernRegistry.PrimitiveType.string()
-                                                                ),
-                                                                FernRegistry.Type.object({
-                                                                    extends: [],
-                                                                    properties: [
-                                                                        {
-                                                                            key: "foo",
-                                                                            valueType: FernRegistry.Type.primitive(
-                                                                                FernRegistry.PrimitiveType.string()
-                                                                            ),
-                                                                        },
-                                                                    ],
-                                                                }),
+                                                                {
+                                                                    type: FernRegistry.Type.enum({
+                                                                        values: [
+                                                                            { value: "abc" },
+                                                                            { value: "def" },
+                                                                            { value: "ghi" },
+                                                                            { value: "jkl" },
+                                                                        ],
+                                                                    }),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.primitive(
+                                                                        FernRegistry.PrimitiveType.string()
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    type: FernRegistry.Type.object({
+                                                                        extends: [],
+                                                                        properties: [
+                                                                            {
+                                                                                key: "foo",
+                                                                                valueType: FernRegistry.Type.primitive(
+                                                                                    FernRegistry.PrimitiveType.string()
+                                                                                ),
+                                                                            },
+                                                                        ],
+                                                                    }),
+                                                                },
                                                             ],
                                                         }),
                                                     },
@@ -903,19 +1174,21 @@ export function getRegistryService(
                                         },
                                     ],
                                 }),
+                                examples: [],
                             },
                         ],
                         subpackages: [],
                     },
                 },
                 rootPackage: {
-                    types: [],
+                    types: ["type-3"],
                     subpackages: ["a"],
                     endpoints: [
                         {
                             id: "endpoint-1",
-                            displayName: "My Endpoint",
+                            name: `My ${request.params.environment} Endpoint`,
                             docs: "Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see this other page",
+                            headers: [],
                             queryParameters: [
                                 {
                                     key: "queryParam1",
@@ -1060,23 +1333,34 @@ export function getRegistryService(
                                                     key: "bar",
                                                     valueType: FernRegistry.Type.union({
                                                         members: [
-                                                            FernRegistry.Type.enum({
-                                                                values: ["abc", "def", "ghi", "jkl"],
-                                                            }),
-                                                            FernRegistry.Type.primitive(
-                                                                FernRegistry.PrimitiveType.string()
-                                                            ),
-                                                            FernRegistry.Type.object({
-                                                                extends: [],
-                                                                properties: [
-                                                                    {
-                                                                        key: "foo",
-                                                                        valueType: FernRegistry.Type.primitive(
-                                                                            FernRegistry.PrimitiveType.string()
-                                                                        ),
-                                                                    },
-                                                                ],
-                                                            }),
+                                                            {
+                                                                type: FernRegistry.Type.enum({
+                                                                    values: [
+                                                                        { value: "abc" },
+                                                                        { value: "def" },
+                                                                        { value: "ghi" },
+                                                                        { value: "jkl" },
+                                                                    ],
+                                                                }),
+                                                            },
+                                                            {
+                                                                type: FernRegistry.Type.primitive(
+                                                                    FernRegistry.PrimitiveType.string()
+                                                                ),
+                                                            },
+                                                            {
+                                                                type: FernRegistry.Type.object({
+                                                                    extends: [],
+                                                                    properties: [
+                                                                        {
+                                                                            key: "foo",
+                                                                            valueType: FernRegistry.Type.primitive(
+                                                                                FernRegistry.PrimitiveType.string()
+                                                                            ),
+                                                                        },
+                                                                    ],
+                                                                }),
+                                                            },
                                                         ],
                                                     }),
                                                 },
@@ -1121,10 +1405,12 @@ export function getRegistryService(
                                     },
                                 ],
                             }),
+                            examples: [],
                         },
                         {
                             id: "endpoint-2",
-                            displayName: "My Endpoint",
+                            name: "My Endpoint",
+                            headers: [],
                             queryParameters: [],
                             path: {
                                 parts: [FernRegistry.EndpointPathPart.literal("/")],
@@ -1140,9 +1426,11 @@ export function getRegistryService(
                                     },
                                 ],
                             }),
+                            examples: [],
                         },
                         {
                             id: "endpoint-3",
+                            headers: [],
                             queryParameters: [],
                             path: {
                                 parts: [
@@ -1166,6 +1454,7 @@ export function getRegistryService(
                                     },
                                 ],
                             }),
+                            examples: [],
                         },
                     ],
                 },
