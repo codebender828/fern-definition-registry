@@ -38,7 +38,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts ",
     "clean": "rm -rf ./lib && tsc --build --clean",
-    "compile": "fern generate && tsc --build",
+    "compile": "tsc --build",
     "test": "dotenv -e .env.test -- ./scripts/db-tests.sh",
     "format": "prettier src/**/*.ts",
     "format:all": "yarn format --write",

@@ -11,6 +11,8 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
+          command: fern generate --log-level debug
+      - run:
           command: yarn compile
           name: Compile
       - run:
