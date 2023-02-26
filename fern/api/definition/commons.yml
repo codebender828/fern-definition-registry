@@ -1,4 +1,10 @@
 types:
+  OrgId: string
+
   WithDocs:
     properties:
       docs: optional<string>
+
+errors: 
+  ApiDoesNotExistError:
+    status-code: 404

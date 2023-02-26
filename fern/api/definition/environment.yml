@@ -1,11 +1,31 @@
+imports: 
+  registry: registry.yml
+
 service:
-  base-path: /environments
-  auth: false
+  base-path: /environments/api/{apiId}
+  auth: true
+  path-parameters:
+    apiId: registry.ApiId
   endpoints:
     getAll:
       path: ""
       method: GET
       response: GetAllEnvironmentsResponse
+    
+    create: 
+      path: /create
+      method: POST
+      request: Environment
+      errors: 
+        - EnvironmentIdAlreadyExistsError
+    
+    delete: 
+      path: /{environmentId}
+      path-parameters:
+        environmentId: EnvironmentId
+      method: DELETE
+      errors: 
+        - EnvironmentDoesNotExistError
 
 types:
   EnvironmentId: string
@@ -14,6 +34,7 @@ types:
     properties:
       id: EnvironmentId
       name: string
+      url: string
 
   GetAllEnvironmentsResponse:
     properties:
@@ -22,3 +43,6 @@ types:
 errors:
   EnvironmentDoesNotExistError:
     status-code: 404
+  
+  EnvironmentIdAlreadyExistsError: 
+    status-code: 400
