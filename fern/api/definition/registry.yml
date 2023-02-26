@@ -29,7 +29,7 @@ service:
     getApiWithEnvironment:
       method: GET
       docs: Loads an API that has configured environments
-      path: /{apiId}/{environment}
+      path: /{apiId}/{environment}/definition
       path-parameters:
         apiId: ApiId
         environment: environment.EnvironmentId
@@ -40,7 +40,7 @@ service:
     
     getApiWithoutEnvironments: 
       method: GET
-      path: /{apiId}
+      path: /{apiId}/definition
       path-parameters:
         apiId: ApiId
       response: ApiDefinition
@@ -67,7 +67,7 @@ service:
     
     updateApiMetadata: 
       method: POST
-      path: /{apiId}
+      path: /{apiId}/update-metadata
       path-parameters:
         apiId: ApiId
       request: 
