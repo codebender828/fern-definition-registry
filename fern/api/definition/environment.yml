@@ -2,10 +2,8 @@ imports:
   registry: registry.yml
 
 service:
-  base-path: /environments/api/{apiId}
+  base-path: /environments
   auth: true
-  path-parameters:
-    apiId: registry.ApiId
   endpoints:
     getAll:
       path: ""
@@ -28,7 +26,7 @@ service:
         - EnvironmentDoesNotExistError
 
 types:
-  EnvironmentId: string
+  EnvironmentId: uuid
 
   Environment:
     properties:
