@@ -126,4 +126,3 @@ workflows:
             - fern-tokens
           requires:
             - check
-            - test
