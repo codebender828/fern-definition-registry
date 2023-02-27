@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import http from "http";
 import { AuthUtils } from "../../AuthUtils";
 import { register } from "../../generated";
 import { getEnvironmentService } from "../../services/environment";
 import { getRegistryService } from "../../services/registry";
 import { FernRegistryClient } from "../generated";
 
-const PORT = 8080;
+const PORT = 9999;
 
 class MockAuthUtils implements AuthUtils {
     async checkUserBelongsToOrg(): Promise<void> {
@@ -15,22 +16,31 @@ class MockAuthUtils implements AuthUtils {
 }
 
 const CLIENT = new FernRegistryClient({
-    environment: "https://localhost:8080/",
+    environment: `http://localhost:${PORT}/`,
     token: "dummy",
 });
 
+const app = express();
+const prisma = new PrismaClient({
+    log: ["query", "info", "warn", "error"],
+});
+let server: http.Server | undefined;
+
 beforeAll(async () => {
-    const prisma = new PrismaClient({
-        log: ["query", "info", "warn", "error"],
-    });
     const authUtils = new MockAuthUtils();
-    const app = express();
     register(app, {
         registry: getRegistryService(prisma, authUtils),
         environment: getEnvironmentService(prisma, authUtils),
     });
     console.log(`Listening for requests on port ${PORT}`);
-    app.listen(PORT);
+    server = app.listen(PORT);
+});
+
+afterAll(async () => {
+    await prisma.$disconnect();
+    if (server != null) {
+        server.close();
+    }
 });
 
 it("create environment", async () => {
