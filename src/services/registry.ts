@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { AuthUtils } from "src/authUtils";
+import { AuthUtils } from "src/AuthUtils";
 import { ApiDoesNotExistError, DeploymentInfo, EnvironmentDoesNotExistError, EnvironmentId } from "src/generated/api";
 import { RegistryService } from "src/generated/api/resources/registry/service/RegistryService";
 import * as FernSerializers from "src/generated/serialization";
@@ -191,7 +191,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
         async updateApiMetadata(req, res) {
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
 
-            const updateApiMetadataResponse = await prisma.apis.update({
+            await prisma.apis.update({
                 data: {
                     description: req.body.description,
                     name: req.body.name,
@@ -205,8 +205,8 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             });
             await res.send();
         },
-        async getLogoUploadS3Url(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+        async getLogoUploadS3Url() {
+            throw new Error("Unimplemented");
         },
     });
 }

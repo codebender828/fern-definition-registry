@@ -1,9 +1,12 @@
 import { FernVenusApi, FernVenusApiClient } from "@fern-api/venus-api-sdk";
 import { FdrConfig } from "./config";
 import { UnauthorizedError, UserNotInOrgError } from "./generated/api";
-import { v4 as uuidv4 } from "uuid";
 
-export class AuthUtils {
+export interface AuthUtils {
+    checkUserBelongsToOrg({ authHeader, orgId }: { authHeader: string | undefined; orgId: string }): Promise<void>;
+}
+
+export class AuthUtilsImpl implements AuthUtils {
     private config: FdrConfig;
 
     constructor(config: FdrConfig) {

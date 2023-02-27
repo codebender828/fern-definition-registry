@@ -50,8 +50,8 @@
     "lint:fix": "yarn lint --fix",
     "dev:db:migrate": "dotenv -e .env.dev -- yarn prisma migrate deploy",
     "local:db:migrate": "dotenv -e .env.local -- yarn prisma migrate dev",
-    "local:db:up": "docker-compose -f docker-compose.db.yml up -d",
-    "local:db:down": "docker-compose -f docker-compose.db.yml down -d",
+    "local:db:up": "docker-compose -f docker-compose.local.yml up -d",
+    "local:db:down": "docker-compose -f docker-compose.local.yml down -d",
     "local:docker": "dotenv -e .env.local -- ./create_docker.sh local",
     "dev:docker": "dotenv -e .env.dev -- ./create_docker.sh"
   }

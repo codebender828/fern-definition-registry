@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import express from "express";
-import { AuthUtils } from "./authUtils";
+import { AuthUtilsImpl } from "./AuthUtils";
 import { getConfig } from "./config";
 import { register } from "./generated";
 import { getEnvironmentService } from "./services/environment";
@@ -27,7 +27,7 @@ async function main() {
             log: ["info", "warn", "error"],
         });
 
-        const authUtils = new AuthUtils(config);
+        const authUtils = new AuthUtilsImpl(config);
 
         register(app, {
             registry: getRegistryService(prisma, authUtils),
