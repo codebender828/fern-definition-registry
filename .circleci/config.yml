@@ -111,14 +111,11 @@ workflows:
       
       - deploy-prod:
           filters:
+            branches:
+              ignore: /.*/
             tags:
-              only: /.*/
-          # filters:
-          #   branches:
-          #     ignore: /.*/
-          #   tags:
-          #     only:
-          #       - /.*/
+              only:
+                - /.*/
           context:
             - aws
             - github
