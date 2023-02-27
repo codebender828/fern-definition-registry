@@ -31,6 +31,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                     description: true,
                     logo_s3_url: true,
                     orgId: true,
+                    name: true,
                 },
             });
             if (api == null) {
@@ -49,7 +50,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
 
             await res.send({
                 id: api.apiId,
-                name: api.orgId,
+                name: api.name,
                 description: api.description ?? undefined,
                 logoS3Url: api.logo_s3_url ?? undefined,
                 environments,
@@ -77,6 +78,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                     description: true,
                     logo_s3_url: true,
                     orgId: true,
+                    name: true,
                 },
             });
             const apiMetadatas = apis.map((api) => {
@@ -91,7 +93,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 });
                 return {
                     id: api.apiId,
-                    name: api.orgId,
+                    name: api.name,
                     description: api.description ?? undefined,
                     logoS3Url: api.logo_s3_url ?? undefined,
                     environments,
@@ -116,7 +118,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             if (apiDefinition == null) {
                 throw new ApiDoesNotExistError();
             }
-            const rawApiDefinition = JSON.stringify(apiDefinition.definition.toString());
+            const rawApiDefinition = JSON.parse(apiDefinition.definition.toString());
             const parsedApiDefinition = await FernSerializers.ApiDefinition.parseOrThrow(rawApiDefinition);
             res.send(parsedApiDefinition);
         },
@@ -136,7 +138,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             if (apiDefinition == null) {
                 throw new ApiDoesNotExistError();
             }
-            const rawApiDefinition = JSON.stringify(apiDefinition.definition.toString());
+            const rawApiDefinition = JSON.parse(apiDefinition.definition.toString());
             const parsedApiDefinition = await FernSerializers.ApiDefinition.parseOrThrow(rawApiDefinition);
             res.send(parsedApiDefinition);
         },
