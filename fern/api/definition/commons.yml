@@ -8,3 +8,9 @@ types:
 errors: 
   ApiDoesNotExistError:
     status-code: 404
+  
+  UserNotInOrgError: 
+    status-code: 403
+
+  UnauthorizedError: 
+    status-code: 401

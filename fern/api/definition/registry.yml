@@ -7,7 +7,7 @@ imports:
   commons: commons.yml
 
 service:
-  base-path: /registry/orgs/{orgId}/apis
+  base-path: /orgs/{orgId}/apis
   auth: true
   path-parameters:
     orgId: commons.OrgId
@@ -61,6 +61,7 @@ service:
               type: optional<environment.EnvironmentId>
               docs: | 
                 If the API has environments, then you must provide an environment id.
+            apiName: string
       errors: 
         - commons.ApiDoesNotExistError
         - environment.EnvironmentDoesNotExistError
@@ -74,7 +75,7 @@ service:
         name: UpdateApiMetadataRequest
         body: 
           properties: 
-            name: optional<string>
+            name: string
             description: optional<string>
             git_repo: optional<GitRepo>
       errors: 
