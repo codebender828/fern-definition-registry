@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { AuthUtils } from "src/AuthUtils";
-import { ApiDoesNotExistError, DeploymentInfo, EnvironmentDoesNotExistError, EnvironmentId } from "src/generated/api";
-import { RegistryService } from "src/generated/api/resources/registry/service/RegistryService";
-import * as FernSerializers from "src/generated/serialization";
 import { v4 as uuidv4 } from "uuid";
+import { AuthUtils } from "../AuthUtils";
+import { ApiDoesNotExistError, DeploymentInfo, EnvironmentDoesNotExistError, EnvironmentId } from "../generated/api";
+import { RegistryService } from "../generated/api/resources/registry/service/RegistryService";
+import * as FernSerializers from "../generated/serialization";
 
 export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): RegistryService {
     return new RegistryService({

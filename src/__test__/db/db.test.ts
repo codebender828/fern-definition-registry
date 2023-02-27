@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
-import { AuthUtils } from "src/AuthUtils";
-import { register } from "src/generated";
-import { getEnvironmentService } from "src/services/environment";
-import { getRegistryService } from "src/services/registry";
+import { AuthUtils } from "../../AuthUtils";
+import { register } from "../../generated";
+import { getEnvironmentService } from "../../services/environment";
+import { getRegistryService } from "../../services/registry";
 import { FernRegistryClient } from "../generated";
 
 const PORT = 8080;

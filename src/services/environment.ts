@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { AuthUtils } from "src/AuthUtils";
 import { v4 as uuidv4 } from "uuid";
+import { AuthUtils } from "../AuthUtils";
 import { EnvironmentService } from "../generated/api/resources/environment/service/EnvironmentService";
 
 export function getEnvironmentService(prisma: PrismaClient, authUtils: AuthUtils): EnvironmentService {
