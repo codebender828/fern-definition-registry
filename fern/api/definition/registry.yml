@@ -78,7 +78,7 @@ service:
             name: string
             description: optional<string>
             git_repo: optional<GitRepo>
-            emoji: optional<string>
+            image: optional<ApiImage>
       errors:
         - commons.ApiDoesNotExistError
 
@@ -122,7 +122,7 @@ types:
       id: ApiId
       name: string
       description: optional<string>
-      emoji: optional<string>
+      image: optional<ApiImage>
       git_repo: optional<GitRepo>
       environments: optional<ApiEnvironments>
 
@@ -141,3 +141,9 @@ types:
   GetLogoUploadS3UrlResponse:
     properties:
       s3UploadUrl: string
+  
+  ApiImage: 
+    union: 
+      emoji: optional<string>
+      url: optional<string>
+      #TODO: support S3
