@@ -1,4 +1,4 @@
-imports: 
+imports:
   registry: registry.yml
   commons: commons.yml
 
@@ -12,28 +12,27 @@ service:
       path: ""
       method: GET
       response: GetAllEnvironmentsResponse
-      errors: 
+      errors:
         - commons.UserNotInOrgError
-    
-    create: 
+
+    create:
       path: /create
       method: POST
-      request: 
+      request:
         name: CreateEnvironmentRequest
-        body: 
-          properties: 
-            name: string
-            url: string
-      response: EnvironmentId
-      errors: 
+        body:
+          properties:
+            id: EnvironmentId
+      errors:
         - commons.UserNotInOrgError
-    
-    delete: 
+        - EnvironmentIdAlreadyExistsError
+
+    delete:
       path: /{environmentId}
       path-parameters:
         environmentId: EnvironmentId
       method: DELETE
-      errors: 
+      errors:
         - EnvironmentDoesNotExistError
         - commons.UserNotInOrgError
 
@@ -43,8 +42,6 @@ types:
   Environment:
     properties:
       id: EnvironmentId
-      name: string
-      url: string
 
   GetAllEnvironmentsResponse:
     properties:
@@ -52,4 +49,6 @@ types:
 
 errors:
   EnvironmentDoesNotExistError:
+    status-code: 404
+  EnvironmentIdAlreadyExistsError:
     status-code: 404
