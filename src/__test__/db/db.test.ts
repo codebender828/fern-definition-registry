@@ -147,6 +147,6 @@ it("definition crud", async () => {
     expect(noopMetadata != null).toEqual(true);
 
     // load api definition
-    const apiDefinition = await CLIENT.registry.getApiWithEnvironment("fern", "fdr", environmentId);
+    const apiDefinition = await CLIENT.registry.getApiDefinitionForEnvironment("fern", "fdr", environmentId);
     expect(JSON.stringify(apiDefinition)).toEqual(JSON.stringify(MOCK_API_DEFINITION));
 });

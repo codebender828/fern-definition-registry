@@ -1,5 +1,5 @@
 types:
-  OrgId: string
+  OrganizationId: string
 
   WithDocs:
     properties:

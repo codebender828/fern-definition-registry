@@ -8,12 +8,15 @@ import * as FernSerializers from "../generated/serialization";
 export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): RegistryService {
     return new RegistryService({
         async getApiMetadata(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
             const api = await prisma.apis.findUnique({
                 where: {
                     orgId_apiId: {
                         apiId: req.params.apiId,
-                        orgId: req.params.orgId,
+                        orgId: req.params.organizationId,
                     },
                 },
                 select: {
@@ -60,10 +63,13 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             });
         },
         async getAllApiMetadata(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
             const apis = await prisma.apis.findMany({
                 where: {
-                    orgId: req.params.orgId,
+                    orgId: req.params.organizationId,
                 },
                 distinct: "apiId",
                 select: {
@@ -112,7 +118,10 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             });
         },
         async getApiDefinitionForEnvironment(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
             const apiDefinition = await prisma.apiDefinitions.findFirst({
                 where: {
                     apiId: req.params.apiId,
@@ -131,8 +140,14 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             res.send(parsedApiDefinition);
         },
         async getLatestApiDefinition(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
             const apiDefinition = await prisma.apiDefinitions.findFirst({
                 where: {
                     apiId: req.params.apiId,
@@ -151,12 +166,15 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             res.send(parsedApiDefinition);
         },
         async registerApi(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
             if (req.body.environmentId != null) {
                 const environment = await prisma.environments.findUnique({
                     where: {
                         orgId_environmentId: {
-                            orgId: req.params.orgId,
+                            orgId: req.params.organizationId,
                             environmentId: req.body.environmentId,
                         },
                     },
@@ -170,7 +188,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 where: {
                     orgId_apiId: {
                         apiId: req.params.apiId,
-                        orgId: req.params.orgId,
+                        orgId: req.params.organizationId,
                     },
                 },
             });
@@ -178,7 +196,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 await prisma.apis.create({
                     data: {
                         apiId: req.params.apiId,
-                        orgId: req.params.orgId,
+                        orgId: req.params.organizationId,
                     },
                 });
             }
@@ -189,7 +207,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 data: {
                     apiDefinitionId,
                     apiId: req.params.apiId,
-                    orgId: req.params.orgId,
+                    orgId: req.params.organizationId,
                     definition: Buffer.from(JSON.stringify(jsonApiDefinition), "utf-8"),
                     environmentId: req.body.environmentId,
                 },
@@ -198,7 +216,10 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             await res.send();
         },
         async updateApiMetadata(req, res) {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
+            await authUtils.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.params.organizationId,
+            });
 
             const jsonImageInfo =
                 req.body.image != null ? await FernSerializers.ApiImage.jsonOrThrow(req.body.image) : undefined;
@@ -211,7 +232,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 },
                 where: {
                     orgId_apiId: {
-                        orgId: req.params.orgId,
+                        orgId: req.params.organizationId,
                         apiId: req.params.apiId,
                     },
                 },

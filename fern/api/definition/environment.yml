@@ -3,9 +3,9 @@ imports:
   commons: commons.yml
 
 service:
-  base-path: /org/{orgId}/environments
+  base-path: /org/{organizationId}/environments
   path-parameters:
-    orgId: commons.OrgId
+    organizationId: commons.OrganizationId
   auth: true
   endpoints:
     getAll:

@@ -7,10 +7,10 @@ imports:
   commons: commons.yml
 
 service:
-  base-path: /orgs/{orgId}/apis
+  base-path: /orgs/{organizationId}/apis
   auth: true
   path-parameters:
-    orgId: commons.OrgId
+    organizationId: commons.OrganizationId
   endpoints:
     getAllApiMetadata:
       method: GET
