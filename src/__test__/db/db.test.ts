@@ -107,7 +107,6 @@ it("definition crud", async () => {
 
     // register api
     await CLIENT.registry.registerApi("fern", "fdr", {
-        apiName: "Fern Definition Registry",
         environmentId,
         apiDefinition: MOCK_API_DEFINITION,
     });
@@ -118,20 +117,17 @@ it("definition crud", async () => {
 
     // register api more times
     await CLIENT.registry.registerApi("fern", "fdr", {
-        apiName: "Fern Definition Registry",
         environmentId,
         apiDefinition: MOCK_API_DEFINITION,
     });
 
     await CLIENT.registry.registerApi("fern", "fdr", {
-        apiName: "Fern Definition Registry",
         environmentId,
         apiDefinition: MOCK_API_DEFINITION,
     });
 
     // register noop api
     await CLIENT.registry.registerApi("fern", "noop", {
-        apiName: "NOOP",
         environmentId,
         apiDefinition: EMPTY_API_DEFINITION,
     });

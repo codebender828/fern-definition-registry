@@ -179,7 +179,6 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                     data: {
                         apiId: req.params.apiId,
                         orgId: req.params.orgId,
-                        name: req.body.apiName,
                     },
                 });
             }

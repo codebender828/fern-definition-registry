@@ -61,9 +61,7 @@ service:
               type: optional<environment.EnvironmentId>
               docs: |
                 If the API has environments, then you must provide an environment id.
-            apiName: string
       errors:
-        - commons.ApiDoesNotExistError
         - environment.EnvironmentDoesNotExistError
 
     updateApiMetadata:
