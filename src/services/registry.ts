@@ -111,7 +111,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
                 apis: apiMetadatas,
             });
         },
-        async getApiWithEnvironment(req, res) {
+        async getApiDefinitionForEnvironment(req, res) {
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
             const apiDefinition = await prisma.apiDefinitions.findFirst({
                 where: {
@@ -130,7 +130,7 @@ export function getRegistryService(prisma: PrismaClient, authUtils: AuthUtils): 
             const parsedApiDefinition = await FernSerializers.ApiDefinition.parseOrThrow(rawApiDefinition);
             res.send(parsedApiDefinition);
         },
-        async getApiWithoutEnvironments(req, res) {
+        async getLatestApiDefinition(req, res) {
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.params.orgId });
             const apiDefinition = await prisma.apiDefinitions.findFirst({

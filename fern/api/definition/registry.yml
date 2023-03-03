@@ -26,7 +26,7 @@ service:
       errors:
         - commons.ApiDoesNotExistError
 
-    getApiWithEnvironment:
+    getApiDefinitionForEnvironment:
       method: GET
       docs: Loads an API that has configured environments
       path: /{apiId}/{environment}/definition
@@ -38,7 +38,7 @@ service:
         - commons.ApiDoesNotExistError
         - environment.EnvironmentDoesNotExistError
 
-    getApiWithoutEnvironments:
+    getLatestApiDefinition:
       method: GET
       path: /{apiId}/definition
       path-parameters:
