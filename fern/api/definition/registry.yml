@@ -124,7 +124,7 @@ types:
       description: optional<string>
       image: optional<ApiImage>
       git_repo: optional<GitRepo>
-      environments: optional<ApiEnvironments>
+      environments: map<environment.EnvironmentId, commons.DeploymentInfo>
 
   GitRepo:
     union:
@@ -132,18 +132,12 @@ types:
       gitlab: string
       bitbucket: string
 
-  ApiEnvironments: map<environment.EnvironmentId, DeploymentInfo>
-
-  DeploymentInfo:
-    properties:
-      registrationTime: datetime
-
   GetLogoUploadS3UrlResponse:
     properties:
       s3UploadUrl: string
-  
-  ApiImage: 
-    union: 
-      emoji: optional<string>
-      url: optional<string>
+
+  ApiImage:
+    union:
+      emoji: string
+      url: string
       #TODO: support S3

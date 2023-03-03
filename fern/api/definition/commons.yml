@@ -5,12 +5,16 @@ types:
     properties:
       docs: optional<string>
 
-errors: 
+  DeploymentInfo:
+    properties:
+      registrationTime: datetime
+
+errors:
   ApiDoesNotExistError:
     status-code: 404
-  
-  UserNotInOrgError: 
+
+  UserNotInOrgError:
     status-code: 403
 
-  UnauthorizedError: 
+  UnauthorizedError:
     status-code: 401

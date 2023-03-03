@@ -27,7 +27,7 @@ service:
       errors:
         - commons.UserNotInOrgError
         - EnvironmentIdAlreadyExistsError
-    
+
     update:
       method: POST
       path: /udpate/{environmentId}
@@ -58,6 +58,7 @@ types:
     properties:
       id: EnvironmentId
       description: optional<string>
+      apis: map<registry.ApiId, commons.DeploymentInfo>
 
   GetAllEnvironmentsResponse:
     properties:
