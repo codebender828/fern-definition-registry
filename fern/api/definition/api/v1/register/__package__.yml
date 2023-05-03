@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  endpoint: endpoint.yml
+  type: type.yml
+  rootCommons: ../../../commons.yml
+
+service:
+  auth: true
+  base-path: /registry/api
+  endpoints:
+    registerApiDefinition:
+      path: /register
+      method: POST
+      request:
+        name: RegisterApiDefinitionRequest
+        body:
+          properties:
+            rootPackage: ApiDefinitionPackage
+            types: map<type.TypeId, type.TypeDefinition>
+            subpackages: map<SubpackageId, ApiDefinitionSubpackage>
+      response: rootCommons.ApiDefinitionId
+
+types:
+  ApiDefinitionPackage:
+    properties:
+      endpoints: list<endpoint.EndpointDefinition>
+      types: list<type.TypeId>
+      subpackages: list<SubpackageId>
+
+  ApiDefinitionSubpackage:
+    extends: ApiDefinitionPackage
+    properties:
+      subpackageId: SubpackageId
+      name: string
+
+  SubpackageId: string
