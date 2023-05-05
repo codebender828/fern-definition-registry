@@ -1,0 +1,13 @@
+service:
+  base-path: /file-upload
+  auth: true
+  endpoints:
+    getPresignedS3UploadUrl:
+      method: POST
+      path: /presigned-url
+      request:
+        name: GetPresignedS3UploadUrlRequest
+        body:
+          properties:
+            filename: string
+      response: string
