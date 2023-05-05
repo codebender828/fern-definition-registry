@@ -50,6 +50,8 @@ types:
       string: {}
       boolean: {}
       datetime: {}
+      date: {}
+      base64: {}
       uuid: {}
 
   OptionalType:
