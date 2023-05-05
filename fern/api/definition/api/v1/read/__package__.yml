@@ -11,9 +11,9 @@ service:
   endpoints:
     getApi:
       method: GET
-      path: /load/{apiId}
+      path: /load/{apiDefinitionId}
       path-parameters:
-        apiId: rootCommons.ApiDefinitionId
+        apiDefinitionId: rootCommons.ApiDefinitionId
       response: ApiDefinition
       errors:
         - ApiDoesNotExistError

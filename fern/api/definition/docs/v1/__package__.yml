@@ -17,6 +17,10 @@ service:
           properties:
             domain: string
             docsDefinition: DocsDefinition
+            orgId: rootCommons.OrgId
+      errors: 
+        - rootCommons.UnauthorizedError
+        - rootCommons.UserNotInOrgError
 
     getDocsForDomain:
       method: GET
@@ -45,7 +49,7 @@ types:
     properties:
       navigation: NavigationConfig
       logo: optional<Url>
-      colors: ColorsConfig
+      colors: optional<ColorsConfig>
 
   NavigationConfig:
     properties:
