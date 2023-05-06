@@ -11,7 +11,7 @@ export function getRegisterApiService(prisma: PrismaClient, authUtils: AuthUtils
         registerApiDefinition: async (req, res) => {
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.body.orgId });
             const apiDefinitionId = uuidv4();
-            const transformedApiDefinition = transformApiDefinitionForReading(req.body.definition);
+            const transformedApiDefinition = transformApiDefinitionForReading(req.body.definition, apiDefinitionId);
             const jsonApiDefinition = await FernSerializers.api.v1.read.ApiDefinition.jsonOrThrow(
                 transformedApiDefinition
             );
