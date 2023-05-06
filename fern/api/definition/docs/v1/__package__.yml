@@ -4,7 +4,7 @@ imports:
   rootCommons: ../../commons.yml
 
 service:
-  base-path: /registry/read/docs
+  base-path: /docs
   auth: false
   endpoints:
     registerDocs:
