@@ -6,7 +6,7 @@ imports:
   rootCommons: ../../../commons.yml
 
 service:
-  base-path: /registry/api
+  base-path: /api-registry/v1
   auth: false
   endpoints:
     getApi:

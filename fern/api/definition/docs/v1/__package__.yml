@@ -4,7 +4,7 @@ imports:
   rootCommons: ../../commons.yml
 
 service:
-  base-path: /docs
+  base-path: /docs/v1
   auth: false
   endpoints:
     registerDocs:
@@ -18,7 +18,7 @@ service:
             domain: string
             docsDefinition: DocsDefinition
             orgId: rootCommons.OrgId
-      errors: 
+      errors:
         - rootCommons.UnauthorizedError
         - rootCommons.UserNotInOrgError
 

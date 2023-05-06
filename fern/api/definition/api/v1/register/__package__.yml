@@ -7,7 +7,7 @@ imports:
 
 service:
   auth: true
-  base-path: /registry/api
+  base-path: /api-registry/v1
   endpoints:
     registerApiDefinition:
       path: /register
