@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 
 imports:
-  rootCommons: ../../commons.yml
+  rootCommons: ../../../commons.yml
 
 service:
   base-path: /registry/docs
@@ -25,7 +25,7 @@ types:
 
   DocsDefinition:
     properties:
-      pages: map<PageId, PageMetadata>
+      pages: map<PageId, PageContent>
       config: DocsConfig
 
   PageContent:
