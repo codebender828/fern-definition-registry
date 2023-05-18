@@ -133,18 +133,18 @@ const DOCS_REGISTER_DEFINITION: FernRegistry.docs.v1.DocsDefinition = {
 
 it("docs register", async () => {
     // register docs
-    await CLIENT.docs.v1.registerDocs({
+    await CLIENT.docs.v1.write.registerDocs({
         docsDefinition: DOCS_REGISTER_DEFINITION,
         orgId: "fern",
         domain: "docs.fern.com",
     });
     // load docs
-    const docs = await CLIENT.docs.v1.getDocsForDomain("docs.fern.com");
+    const docs = await CLIENT.docs.v1.read.getDocsForDomain("docs.fern.com");
     // assert docs are equal
     expect(JSON.stringify(docs)).toEqual(JSON.stringify(DOCS_REGISTER_DEFINITION));
 
     //re-register docs
-    await CLIENT.docs.v1.registerDocs({
+    await CLIENT.docs.v1.write.registerDocs({
         docsDefinition: DOCS_REGISTER_DEFINITION,
         orgId: "fern",
         domain: "docs.fern.com",

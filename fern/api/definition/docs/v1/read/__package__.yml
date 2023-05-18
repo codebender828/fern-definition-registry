@@ -44,21 +44,26 @@ types:
 
   NavigationItem:
     union:
-      page: PageId
+      page: PageMetadata
       api: ApiSection
       section: DocsSection
-    base-properties:
+  
+  PageMetadata: 
+    properties: 
+      id: PageId
       urlSlug: string
 
   ApiSection:
     properties:
       title: string
       api: rootCommons.ApiDefinitionId
+      urlSlug: string
 
   DocsSection:
     properties:
       title: string
       items: list<NavigationItem>
+      urlSlug: string
 
   ColorsConfig:
     properties: {}
