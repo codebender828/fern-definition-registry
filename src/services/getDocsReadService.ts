@@ -3,6 +3,7 @@ import { DomainNotRegisteredError } from "src/generated/api/resources/docs/resou
 import { ReadService } from "../generated/api/resources/docs/resources/v1/resources/read/service/ReadService";
 import * as FernSerializers from "../generated/serialization";
 import { readBuffer } from "../serdeUtils";
+import { convertDbApiDefinitionToRead } from "./getApiReadService";
 
 export function getDocsReadService(prisma: PrismaClient): ReadService {
     return new ReadService({
@@ -16,10 +17,28 @@ export function getDocsReadService(prisma: PrismaClient): ReadService {
                 throw new DomainNotRegisteredError();
             }
             const docsDefinitionJson = readBuffer(docs.docsDefinition);
-            const parsedDocsDefinition = await FernSerializers.docs.v1.read.DocsDefinition.parseOrThrow(
+            const parsedDocsDbDefinition = await FernSerializers.docs.v1.read.DocsDefinitionDb.parseOrThrow(
                 docsDefinitionJson
             );
-            return res.send(parsedDocsDefinition);
+            const apiDefinitions = await prisma.apiDefinitionsV2.findMany({
+                where: {
+                    apiDefinitionId: {
+                        in: [...parsedDocsDbDefinition.referencedApis],
+                    },
+                },
+            });
+
+            return res.send({
+                ...parsedDocsDbDefinition,
+                apis: Object.fromEntries(
+                    await Promise.all(
+                        apiDefinitions.map(async (apiDefinition) => {
+                            const parsedApiDefinition = await convertDbApiDefinitionToRead(apiDefinition.definition);
+                            return [apiDefinition.apiDefinitionId, parsedApiDefinition];
+                        })
+                    )
+                ),
+            });
         },
     });
 }

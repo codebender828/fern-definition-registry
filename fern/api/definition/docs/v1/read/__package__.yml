@@ -26,8 +26,14 @@ types:
 
   DocsDefinition:
     properties:
-      pages: map<PageId, PageMetadata>
+      pages: map<PageId, PageContent>
       apis: map<rootCommons.ApiDefinitionId, apiReadV1.ApiDefinition>
+      config: DocsConfig
+
+  DocsDefinitionDb: 
+    properties: 
+      pages: map<PageId, PageContent>
+      referencedApis: set<rootCommons.ApiDefinitionId>
       config: DocsConfig
 
   PageContent:
