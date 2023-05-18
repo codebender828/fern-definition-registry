@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  rootCommons: ../../commons.yml
+
+service:
+  base-path: /registry/docs
+  auth: false
+  audiences:
+    - read
+  endpoints:
+    getDocsForDomain:
+      method: GET
+      path: /load/{domain}
+      path-parameters:
+        domain: string
+      response: DocsDefinition
+      errors:
+        - DomainNotRegisteredError
+
+types:
+  PageId: string
+
+  Url: string
+
+  DocsDefinition:
+    properties:
+      pages: map<PageId, PageMetadata>
+      config: DocsConfig
+
+  PageContent:
+    properties:
+      markdown: string
+
+  DocsConfig:
+    properties:
+      navigation: NavigationConfig
+      logo: optional<Url>
+      colors: optional<ColorsConfig>
+
+  NavigationConfig:
+    properties:
+      items: list<NavigationItem>
+
+  NavigationItem:
+    union:
+      page: PageId
+      api: ApiSection
+      section: DocsSection
+    base-properties:
+      urlSlug: string
+
+  ApiSection:
+    properties:
+      title: string
+      api: rootCommons.ApiDefinitionId
+
+  DocsSection:
+    properties:
+      title: string
+      items: list<NavigationItem>
+
+  ColorsConfig:
+    properties: {}
+
+errors:
+  DomainNotRegisteredError:
+    status-code: 404

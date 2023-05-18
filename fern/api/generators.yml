@@ -12,7 +12,9 @@ groups:
         output:
           location: local-file-system
           path: ../../src/__test__/generated
-  internal:
+  internal-write:
+    audiences:
+      - write
     generators:
       - name: fernapi/fern-typescript-node-sdk
         version: 0.6.3
@@ -25,6 +27,10 @@ groups:
           neverThrowErrors: true
           includeUtilsOnUnionMembers: true
           includeOtherInUnionTypes: true
+  internal-read:
+    audiences:
+      - read
+    generators:
       - name: fernapi/fern-typescript-browser-sdk
         version: 0.6.3
         output:

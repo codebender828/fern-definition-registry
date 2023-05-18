@@ -4,8 +4,10 @@ imports:
   rootCommons: ../../commons.yml
 
 service:
-  base-path: /registry/read/docs
+  base-path: /registry/docs
   auth: false
+  audiences:
+    - write
   endpoints:
     registerDocs:
       auth: true
@@ -18,18 +20,9 @@ service:
             domain: string
             docsDefinition: DocsDefinition
             orgId: rootCommons.OrgId
-      errors: 
+      errors:
         - rootCommons.UnauthorizedError
         - rootCommons.UserNotInOrgError
-
-    getDocsForDomain:
-      method: GET
-      path: /load/{domain}
-      path-parameters:
-        domain: string
-      response: DocsDefinition
-      errors:
-        - DomainNotRegisteredError
 
 types:
   PageId: string
@@ -73,7 +66,3 @@ types:
 
   ColorsConfig:
     properties: {}
-
-errors:
-  DomainNotRegisteredError:
-    status-code: 404
