@@ -2,6 +2,7 @@
 
 imports:
   rootCommons: ../../../commons.yml
+  apiReadV1: ../../../api/v1/read/__package__.yml
 
 service:
   base-path: /registry/docs
@@ -25,7 +26,8 @@ types:
 
   DocsDefinition:
     properties:
-      pages: map<PageId, PageContent>
+      pages: map<PageId, PageMetadata>
+      apis: map<rootCommons.ApiDefinitionId, apiReadV1.ApiDefinition>
       config: DocsConfig
 
   PageContent:
@@ -47,9 +49,9 @@ types:
       page: PageMetadata
       api: ApiSection
       section: DocsSection
-  
-  PageMetadata: 
-    properties: 
+
+  PageMetadata:
+    properties:
       id: PageId
       urlSlug: string
 
