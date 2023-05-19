@@ -17,7 +17,11 @@ export function transformApiDefinitionForReading(
 
     return {
         id,
-        rootPackage: writeShape.rootPackage,
+        rootPackage: {
+            endpoints: writeShape.rootPackage.endpoints.map((endpoint) => transformEndpoint({ writeShape: endpoint })),
+            subpackages: writeShape.rootPackage.subpackages,
+            types: writeShape.rootPackage.types,
+        },
         types: writeShape.types,
         subpackages: entries(writeShape.subpackages).reduce<
             Record<FernRegistry.api.v1.read.SubpackageId, FernRegistry.api.v1.read.ApiDefinitionSubpackage>
