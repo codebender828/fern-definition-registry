@@ -33,7 +33,7 @@ export function transformNavigationItemForReading(
                 type: "page",
                 id: writeShape.id,
                 title: writeShape.title,
-                urlSlug: path.basename(writeShape.title, ".md"), // remove extension
+                urlSlug: kebabCase(writeShape.title),
             };
         case "section":
             return {
