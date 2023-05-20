@@ -21,7 +21,7 @@ service:
             orgId: rootCommons.OrgId
             filesToStore: 
               type: list<string>
-      response: map<string, S3UploadUrls>
+      response: map<string, FileS3UploadUrl>
 
     registerDocs:
       auth: true
