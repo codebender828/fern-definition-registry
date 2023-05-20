@@ -9,36 +9,48 @@ service:
   audiences:
     - write
   endpoints:
-    getS3UploadUrlForDomain: 
+    startDocsRegister: 
       auth: true
       method: POST
-      path: /s3-upload-url
+      path: /init
       request: 
-        name: GetS3UploadUrlForDomainRequest
+        name: StartDocsRegisterRequest
         body: 
           properties: 
             domain: string
             orgId: rootCommons.OrgId
-            filesToStore: 
-              type: list<string>
-      response: map<string, FileS3UploadUrl>
+            fileKeys: 
+              type: list<FileKey>
+              docs: Each string is a key for the file. You can use the filepath as a key. 
+      response: StartDocsRegisterResponse
 
-    registerDocs:
+    finishDocsRegister:
       auth: true
       method: POST
-      path: /register
+      path: /register/{docsRegistrationId}
+      path-parameters:
+        docsRegistrationId: DocsRegistrationId
       request:
         name: RegisterDocsRequest
         body:
           properties:
-            domain: string
             docsDefinition: DocsDefinition
-            orgId: rootCommons.OrgId
       errors:
         - rootCommons.UnauthorizedError
         - rootCommons.UserNotInOrgError
 
 types:
+  FileKey: 
+    type: string
+    docs: Each string is a unique key for the file. You can use the filepath as a key. 
+
+  DocsRegistrationId: string
+
+  StartDocsRegisterResponse: 
+    properties: 
+      docsRegistrationId: DocsRegistrationId
+      uploadUrls: map<FileKey, FileS3UploadUrl> 
+
   FileS3UploadUrl: 
     properties: 
       uploadUrl: string
