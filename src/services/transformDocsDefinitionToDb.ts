@@ -1,5 +1,4 @@
 import { kebabCase } from "lodash";
-import path from "path";
 import { FernRegistry } from "../generated";
 import * as FernRegistryDocsRead from "../generated/api/resources/docs/resources/v1/resources/read";
 
