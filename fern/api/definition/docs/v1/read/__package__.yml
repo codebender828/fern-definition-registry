@@ -35,26 +35,30 @@ types:
 
   Url: string
 
+  FileId: string
+
   DocsDefinition:
     properties:
       pages: map<PageId, PageContent>
       apis: map<rootCommons.ApiDefinitionId, apiReadV1.ApiDefinition>
+      files: map<FileId, Url>
       config: DocsConfig
 
   DocsDefinitionDb:
     properties:
       pages: map<PageId, PageContent>
       referencedApis: set<rootCommons.ApiDefinitionId>
+      files: list<FileId>
       config: DocsConfig
 
   PageContent:
     properties:
-      markdown: string
+      markdown: string # eventually PageContent should just be a FileId ? 
 
   DocsConfig:
     properties:
       navigation: NavigationConfig
-      logo: optional<Url>
+      logo: optional<FileId>
       colors: optional<ColorsConfig>
 
   NavigationConfig:
