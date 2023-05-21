@@ -2,13 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import express from "express";
 import { AuthUtilsImpl } from "./AuthUtils";
+import { S3UtilsImpl } from "./S3Utils";
 import { getConfig } from "./config";
 import { register } from "./generated";
 import { getReadApiService } from "./services/api/getApiReadService";
 import { getRegisterApiService } from "./services/api/getRegisterApiService";
 import { getDocsReadService } from "./services/docs/getDocsReadService";
 import { getDocsWriteService } from "./services/docs/getDocsWriteService";
-import { S3UtilsImpl } from "./s3Utils";
 
 const PORT = 8080;
 
@@ -37,8 +37,8 @@ async function main() {
         register(app, {
             docs: {
                 v1: {
-                    read: getDocsReadService(prisma),
-                    write: getDocsWriteService(prisma, authUtils),
+                    read: getDocsReadService(prisma, s3Utils),
+                    write: getDocsWriteService(prisma, authUtils, s3Utils),
                 },
             },
             api: {

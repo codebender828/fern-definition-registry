@@ -40,11 +40,12 @@ beforeAll(async () => {
         venusUrl: "",
         s3UrlOverride: "http://s3-mock:9090",
     };
+    const s3Utils = new S3UtilsImpl(config);
     register(app, {
         docs: {
             v1: {
-                read: getDocsReadService(prisma),
-                write: getDocsWriteService(prisma, authUtils, new S3UtilsImpl(config)),
+                read: getDocsReadService(prisma, s3Utils),
+                write: getDocsWriteService(prisma, authUtils, s3Utils),
             },
         },
         api: {
