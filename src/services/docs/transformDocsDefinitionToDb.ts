@@ -15,7 +15,7 @@ export function transformWriteDocsDefinitionToDb({
         items: writeShape.config.navigation.items.map((item) => transformNavigationItemForReading(item)),
     };
     const transformedFiles: Record<FileId, FernRegistryDocsRead.DbFileInfo> = {};
-    Object.entries(files).forEach(([_, s3FileInfo]) => {
+    Object.entries(files).forEach(([, s3FileInfo]) => {
         transformedFiles[s3FileInfo.presignedUrl.fileId] = {
             s3Key: s3FileInfo.key,
         };
