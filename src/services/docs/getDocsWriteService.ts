@@ -1,16 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { AuthUtils } from "../../AuthUtils";
+import { S3FileInfo, S3Utils } from "../../S3Utils";
 import { OrgId } from "../../generated/api";
-import {
-    DocsRegistrationId,
-    FilePath,
-    FileS3UploadUrl,
-} from "../../generated/api/resources/docs/resources/v1/resources/write";
+import { DocsRegistrationId, FilePath } from "../../generated/api/resources/docs/resources/v1/resources/write";
 import { DocsRegistrationIdNotFound } from "../../generated/api/resources/docs/resources/v1/resources/write/errors/DocsRegistrationIdNotFound";
 import { WriteService } from "../../generated/api/resources/docs/resources/v1/resources/write/service/WriteService";
 import * as FernSerializers from "../../generated/serialization";
-import { S3Utils } from "../../s3Utils";
 import { writeBuffer } from "../../serdeUtils";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
 
@@ -19,7 +15,7 @@ const DOCS_REGISTRATIONS: Record<DocsRegistrationId, DocsRegistrationInfo> = {};
 interface DocsRegistrationInfo {
     domain: string;
     orgId: OrgId;
-    presignedUrls: Record<FilePath, FileS3UploadUrl>;
+    s3FileInfos: Record<FilePath, S3FileInfo>;
 }
 
 export function getDocsWriteService(prisma: PrismaClient, authUtils: AuthUtils, s3Utils: S3Utils): WriteService {
@@ -27,18 +23,22 @@ export function getDocsWriteService(prisma: PrismaClient, authUtils: AuthUtils, 
         startDocsRegister: async (req, res) => {
             await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.body.orgId });
             const docsRegistrationId = uuidv4();
-            const presignedUrls = await s3Utils.getPresignedUrls({
+            const s3FileInfos = await s3Utils.getPresignedUploadUrls({
                 domain: req.body.domain,
                 filepaths: req.body.filepaths,
             });
             DOCS_REGISTRATIONS[docsRegistrationId] = {
                 domain: req.body.domain,
                 orgId: req.body.orgId,
-                presignedUrls,
+                s3FileInfos,
             };
             return res.send({
                 docsRegistrationId,
-                uploadUrls: presignedUrls,
+                uploadUrls: Object.fromEntries(
+                    Object.entries(s3FileInfos).map(([filepath, fileInfo]) => {
+                        return [filepath, fileInfo.presignedUrl];
+                    })
+                ),
             });
         },
         finishDocsRegister: async (req, res) => {
@@ -50,7 +50,10 @@ export function getDocsWriteService(prisma: PrismaClient, authUtils: AuthUtils, 
                 authHeader: req.headers.authorization,
                 orgId: docsRegistrationInfo.orgId,
             });
-            const dbDocsDefinition = transformWriteDocsDefinitionToDb(req.body.docsDefinition);
+            const dbDocsDefinition = transformWriteDocsDefinitionToDb({
+                writeShape: req.body.docsDefinition,
+                files: docsRegistrationInfo.s3FileInfos,
+            });
             console.log(
                 `Docs for ${docsRegistrationInfo.orgId} has references to apis ${Array.from(
                     dbDocsDefinition.referencedApis
@@ -71,6 +74,8 @@ export function getDocsWriteService(prisma: PrismaClient, authUtils: AuthUtils, 
                     url: docsRegistrationInfo.domain,
                 },
             });
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete DOCS_REGISTRATIONS[req.params.docsRegistrationId];
             return res.send();
         },
     });

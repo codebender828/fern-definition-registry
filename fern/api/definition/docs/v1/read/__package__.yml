@@ -48,8 +48,11 @@ types:
     properties:
       pages: map<PageId, PageContent>
       referencedApis: set<rootCommons.ApiDefinitionId>
-      files: list<FileId>
+      files: map<FileId, DbFileInfo>
       config: DocsConfig
+  DbFileInfo: 
+    properties: 
+      s3Key: string
 
   PageContent:
     properties:
