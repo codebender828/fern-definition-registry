@@ -1,6 +1,6 @@
 import { kebabCase } from "lodash";
-import { FernRegistry } from "../generated";
-import * as FernRegistryDocsRead from "../generated/api/resources/docs/resources/v1/resources/read";
+import { FernRegistry } from "../../generated";
+import * as FernRegistryDocsRead from "../../generated/api/resources/docs/resources/v1/resources/read";
 
 export function transformWriteDocsDefinitionToDb(
     writeShape: FernRegistry.docs.v1.write.DocsDefinition
@@ -11,6 +11,7 @@ export function transformWriteDocsDefinitionToDb(
     return {
         ...writeShape,
         referencedApis: new Set(getReferencedApiDefinitionIds(navigationConfig)),
+        files: {},
         config: {
             ...writeShape.config,
             navigation: navigationConfig,

@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { FernRegistry } from "../generated";
-import { DomainNotRegisteredError } from "../generated/api/resources/docs/resources/v1/resources/read";
-import { ReadService } from "../generated/api/resources/docs/resources/v1/resources/read/service/ReadService";
-import * as FernSerializers from "../generated/serialization";
-import { readBuffer } from "../serdeUtils";
-import { convertDbApiDefinitionToRead } from "./getApiReadService";
+import { FernRegistry } from "../../generated";
+import { DomainNotRegisteredError } from "../../generated/api/resources/docs/resources/v1/resources/read";
+import { ReadService } from "../../generated/api/resources/docs/resources/v1/resources/read/service/ReadService";
+import * as FernSerializers from "../../generated/serialization";
+import { readBuffer } from "../../serdeUtils";
+import { convertDbApiDefinitionToRead } from "../api/getApiReadService";
 
 export function getDocsReadService(prisma: PrismaClient): ReadService {
     return new ReadService({
@@ -54,6 +54,7 @@ async function getDocsForDomain({
                 })
             )
         ),
+        files: {},
         pages: parsedDocsDbDefinition.pages,
     };
 }

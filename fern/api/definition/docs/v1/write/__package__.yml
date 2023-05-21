@@ -19,9 +19,9 @@ service:
           properties: 
             domain: string
             orgId: rootCommons.OrgId
-            fileKeys: 
-              type: list<FileKey>
-              docs: Each string is a key for the file. You can use the filepath as a key. 
+            filepaths: 
+              type: list<FilePath>
+              docs: Relative filepath from docs folder.
       response: StartDocsRegisterResponse
 
     finishDocsRegister:
@@ -38,9 +38,10 @@ service:
       errors:
         - rootCommons.UnauthorizedError
         - rootCommons.UserNotInOrgError
+        - DocsRegistrationIdNotFound
 
 types:
-  FileKey: 
+  FilePath: 
     type: string
     docs: Each string is a unique key for the file. You can use the filepath as a key. 
 
@@ -49,7 +50,7 @@ types:
   StartDocsRegisterResponse: 
     properties: 
       docsRegistrationId: DocsRegistrationId
-      uploadUrls: map<FileKey, FileS3UploadUrl> 
+      uploadUrls: map<FilePath, FileS3UploadUrl> 
 
   FileS3UploadUrl: 
     properties: 
@@ -105,3 +106,7 @@ types:
 
   ColorsConfig:
     properties: {}
+
+errors: 
+  DocsRegistrationIdNotFound: 
+    status-code: 404

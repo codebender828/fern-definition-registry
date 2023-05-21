@@ -4,10 +4,11 @@ import express from "express";
 import { AuthUtilsImpl } from "./AuthUtils";
 import { getConfig } from "./config";
 import { register } from "./generated";
-import { getReadApiService } from "./services/getApiReadService";
-import { getDocsReadService } from "./services/getDocsReadService";
-import { getDocsWriteService } from "./services/getDocsWriteService";
-import { getRegisterApiService } from "./services/getRegisterApiService";
+import { getReadApiService } from "./services/api/getApiReadService";
+import { getRegisterApiService } from "./services/api/getRegisterApiService";
+import { getDocsReadService } from "./services/docs/getDocsReadService";
+import { getDocsWriteService } from "./services/docs/getDocsWriteService";
+import { S3UtilsImpl } from "./s3Utils";
 
 const PORT = 8080;
 
@@ -30,6 +31,7 @@ async function main() {
         });
 
         const authUtils = new AuthUtilsImpl(config);
+        const s3Utils = new S3UtilsImpl(config);
 
         app.use(express.json({ limit: "50mb" }));
         register(app, {
