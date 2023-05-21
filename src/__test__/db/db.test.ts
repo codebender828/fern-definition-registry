@@ -115,9 +115,7 @@ it("definition register", async () => {
     expect(JSON.stringify(registeredEmptyDefinition.subpackages)).toEqual(
         JSON.stringify(EMPTY_REGISTER_API_DEFINITION.subpackages)
     );
-    expect(JSON.stringify(registeredEmptyDefinition.rootPackage)).toEqual(
-        JSON.stringify(EMPTY_REGISTER_API_DEFINITION.rootPackage)
-    );
+    expect(registeredEmptyDefinition.rootPackage).toEqual(EMPTY_REGISTER_API_DEFINITION.rootPackage);
 
     //register updated definition
     const updatedDefinitionRegisterResponse = await CLIENT.api.v1.register.registerApiDefinition({
@@ -132,9 +130,7 @@ it("definition register", async () => {
     expect(JSON.stringify(updatedDefinition.subpackages)).toEqual(
         JSON.stringify(MOCK_REGISTER_API_DEFINITION.subpackages)
     );
-    expect(JSON.stringify(updatedDefinition.rootPackage)).toEqual(
-        JSON.stringify(MOCK_REGISTER_API_DEFINITION.rootPackage)
-    );
+    expect(updatedDefinition.rootPackage).toEqual(MOCK_REGISTER_API_DEFINITION.rootPackage);
 });
 
 const WRITE_DOCS_REGISTER_DEFINITION: FernRegistry.docs.v1.write.DocsDefinition = {
