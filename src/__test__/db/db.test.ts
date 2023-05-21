@@ -141,17 +141,6 @@ const WRITE_DOCS_REGISTER_DEFINITION: FernRegistry.docs.v1.write.DocsDefinition 
     },
 };
 
-const READ_DOCS_REGISTER_DEFINITION: FernRegistry.docs.v1.read.DocsDefinition = {
-    apis: {},
-    pages: {},
-    config: {
-        navigation: {
-            items: [],
-        },
-    },
-    files: {},
-};
-
 it("docs register", async () => {
     // register docs
     const startDocsRegisterResponse = await CLIENT.docs.v1.write.startDocsRegister({
