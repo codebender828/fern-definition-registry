@@ -156,7 +156,7 @@ it("docs register", async () => {
         domain: "docs.fern.com",
     });
     // assert docs have 2 file urls
-    expect(docs.files).toHaveLength(2);
+    expect(Object.entries(docs.files)).toHaveLength(2);
 
     //re-register docs
     const startDocsRegisterResponse2 = await CLIENT.docs.v1.write.startDocsRegister({
