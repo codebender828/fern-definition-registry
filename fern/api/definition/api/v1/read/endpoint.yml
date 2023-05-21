@@ -80,3 +80,9 @@ types:
       requestBody: unknown
       responseStatusCode: integer
       responseBody: unknown
+      codeExamples: 
+        type: optional<CodeExamples>
+  
+  CodeExamples: 
+    properties: 
+      fetchExample: string
