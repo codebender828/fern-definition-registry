@@ -41,26 +41,15 @@ service:
         - DocsRegistrationIdNotFound
 
 types:
-  FilePath: 
-    type: string
-    docs: Each string is a unique key for the file. You can use the filepath as a key. 
+  FilePath: string
+  S3PreSignedUploadUrl: string
 
   DocsRegistrationId: string
 
   StartDocsRegisterResponse: 
     properties: 
       docsRegistrationId: DocsRegistrationId
-      uploadUrls: map<FilePath, FileS3UploadUrl> 
-
-  FileS3UploadUrl: 
-    properties: 
-      uploadUrl: string
-      fileId: 
-        type: FileId
-        docs: | 
-          When reading docs we will return a map<FileId, URL> that you can use to look up the docs. 
-  
-  FileId: string
+      uploadUrls: map<FilePath, S3PreSignedUploadUrl>  
 
   PageId: string
 
@@ -71,12 +60,12 @@ types:
 
   PageContent:
     properties:
-      markdown: string # eventually PageContent should just be a FileId ? 
+      markdown: string # eventually PageContent should just be a FilePath? 
 
   DocsConfig:
     properties:
       navigation: NavigationConfig
-      logo: optional<FileId>
+      logo: optional<FilePath>
       colors: optional<ColorsConfig>
 
   NavigationConfig:
