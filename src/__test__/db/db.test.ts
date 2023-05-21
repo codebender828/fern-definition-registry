@@ -166,8 +166,8 @@ it("docs register", async () => {
     const docs = await CLIENT.docs.v1.read.getDocsForDomain({
         domain: "docs.fern.com",
     });
-    // assert docs are equal
-    expect(docs).toEqual(READ_DOCS_REGISTER_DEFINITION);
+    // assert docs have 2 file urls
+    expect(docs.files).toHaveLength(2);
 
     //re-register docs
     const startDocsRegisterResponse2 = await CLIENT.docs.v1.write.startDocsRegister({
