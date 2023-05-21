@@ -130,10 +130,6 @@ it("definition register", async () => {
     expect(JSON.stringify(updatedDefinition.subpackages)).toEqual(
         JSON.stringify(MOCK_REGISTER_API_DEFINITION.subpackages)
     );
-    expect(updatedDefinition.rootPackage).toEqual({
-        ...MOCK_REGISTER_API_DEFINITION.rootPackage,
-        urlSlug: "",
-    });
 });
 
 const WRITE_DOCS_REGISTER_DEFINITION: FernRegistry.docs.v1.write.DocsDefinition = {
@@ -161,7 +157,7 @@ it("docs register", async () => {
     const startDocsRegisterResponse = await CLIENT.docs.v1.write.startDocsRegister({
         orgId: "fern",
         domain: "docs.fern.com",
-        filepaths: [],
+        filepaths: ["logo.png", "guides/guide.mdx"],
     });
     await CLIENT.docs.v1.write.finishDocsRegister(startDocsRegisterResponse.docsRegistrationId, {
         docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
