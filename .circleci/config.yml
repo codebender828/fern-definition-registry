@@ -133,9 +133,12 @@ workflows:
       - deploy-dev:
           requires: [check]
           filters:
-            branches:
-              only:
-                - main
+            tags:
+              only: /.*/
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
           context:
             - aws
             - github
