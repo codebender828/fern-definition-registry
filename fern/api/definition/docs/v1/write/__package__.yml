@@ -39,6 +39,7 @@ service:
         - rootCommons.UnauthorizedError
         - rootCommons.UserNotInOrgError
         - DocsRegistrationIdNotFound
+        - FailedToMountDocsDomain
 
 types:
   FilePath: 
@@ -110,3 +111,7 @@ types:
 errors: 
   DocsRegistrationIdNotFound: 
     status-code: 404
+  
+  FailedToMountDocsDomain: 
+    docs: Thrown if we fail to mount the domain in AWS Route53
+    status-code: 500
