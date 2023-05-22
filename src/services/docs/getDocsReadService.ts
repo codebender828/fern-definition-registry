@@ -15,6 +15,9 @@ export function getDocsReadService(prisma: PrismaClient, s3Utils: S3Utils): Read
         getDocsForDomain: async (req, res) => {
             return res.send(await getDocsForDomain({ domain: req.body.domain, prisma, s3Utils }));
         },
+        getCodeExamplesForEndpoint: async (req, res) => {
+            return res.send()
+        },
     });
 }
 

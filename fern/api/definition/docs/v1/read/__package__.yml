@@ -3,6 +3,7 @@
 imports:
   rootCommons: ../../../commons.yml
   apiReadV1: ../../../api/v1/read/__package__.yml
+  apiReadV1Endpoint: ../../../api/v1/read/endpoint.yml
 
 service:
   base-path: /registry/docs
@@ -29,6 +30,16 @@ service:
       response: DocsDefinition
       errors:
         - DomainNotRegisteredError
+    getCodeExamplesForEndpoint: 
+      method: POST
+      path: /code-examples
+      request: 
+        name: CodeExamplesForEndpointRequest
+        body: 
+          properties: 
+            httpMethod: apiReadV1Endpoint.HttpMethod
+            examples: list<apiReadV1Endpoint.ExampleEndpointCall>
+      response: CodeExamples
 
 types:
   PageId: string
@@ -94,6 +105,10 @@ types:
 
   ColorsConfig:
     properties: {}
+  
+  CodeExamples: 
+    properties: 
+      fetch: string
 
 errors:
   DomainNotRegisteredError:
