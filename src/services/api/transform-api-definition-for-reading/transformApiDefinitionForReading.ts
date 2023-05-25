@@ -134,7 +134,10 @@ function createHttpSnippet(
         headers: [],
         cookies: [],
         httpVersion: "2.1",
-        queryString: [],
+        queryString: Object.entries(writeShape.queryParameters).map(([name, value]) => ({
+            name,
+            value: `${value}`,
+        })),
         headersSize: -1,
         bodySize: -1,
     });
