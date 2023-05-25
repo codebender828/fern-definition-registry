@@ -49,7 +49,7 @@
     "clean": "rm -rf ./lib && tsc --build --clean",
     "compile": "tsc --build",
     "test:db": "dotenv -e .env.test -- ./scripts/db-tests.sh",
-    "test": "jest",
+    "test": "jest src/__test__/unit-tests",
     "format": "prettier src/**/*.ts",
     "format:all": "yarn format --write",
     "format:check": "yarn format --check",
