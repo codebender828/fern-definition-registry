@@ -133,7 +133,10 @@ function createHttpSnippet(
             mimeType: "application/json",
             text: writeShape.requestBody != null ? JSON.stringify(writeShape.requestBody) : "",
         },
-        headers: [],
+        headers: Object.entries(writeShape.headers).map(([name, value]) => ({
+            name,
+            value: `${value}`,
+        })),
         cookies: [],
         httpVersion: "2.1",
         queryString: Object.entries(writeShape.queryParameters).map(([name, value]) => ({
