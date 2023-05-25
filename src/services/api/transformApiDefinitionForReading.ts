@@ -1,3 +1,4 @@
+import HTTPSnippet from "httpsnippet";
 import { kebabCase } from "lodash";
 import { FernRegistry } from "../../generated";
 
@@ -72,9 +73,71 @@ function transformEndpoint({
         headers: writeShape.headers,
         request: writeShape.request,
         response: writeShape.response,
-        examples: writeShape.examples,
+        examples: writeShape.examples.map((example) =>
+            transformEndpointEndpointCall({
+                writeShape: example,
+                endpointDefinition: writeShape,
+            })
+        ),
         description: writeShape.description,
     };
+}
+
+function transformEndpointEndpointCall({
+    writeShape,
+    endpointDefinition,
+}: {
+    writeShape: FernRegistry.api.v1.register.ExampleEndpointCall;
+    endpointDefinition: FernRegistry.api.v1.register.EndpointDefinition;
+}): WithoutQuestionMarks<FernRegistry.api.v1.read.ExampleEndpointCall> {
+    const httpSnippet = createHttpSnippet(endpointDefinition, writeShape);
+
+    return {
+        description: writeShape.description,
+        path: writeShape.path,
+        pathParameters: writeShape.pathParameters,
+        queryParameters: writeShape.queryParameters,
+        headers: writeShape.headers,
+        requestBody: writeShape.requestBody,
+        responseStatusCode: writeShape.responseStatusCode,
+        responseBody: writeShape.responseBody,
+        codeExamples: {
+            nodeAxios: convertHttpSnippet(httpSnippet, "node", "axios"),
+        },
+    };
+}
+
+function createHttpSnippet(
+    endpointDefinition: FernRegistry.api.v1.register.EndpointDefinition,
+    writeShape: FernRegistry.api.v1.register.ExampleEndpointCall
+) {
+    return new HTTPSnippet({
+        method: endpointDefinition.method,
+        url: writeShape.path,
+        postData: {
+            mimeType: "application/json",
+            text: writeShape.requestBody != null ? JSON.stringify(writeShape.requestBody) : "",
+        },
+        headers: [],
+        cookies: [],
+        httpVersion: "2.1",
+        queryString: [],
+        headersSize: -1,
+        bodySize: -1,
+    });
+}
+
+function convertHttpSnippet(
+    httpSnippet: HTTPSnippet,
+    target: string,
+    client?: string,
+    options?: HTTPSnippet.Options
+): string {
+    const example = httpSnippet.convert(target, client, options);
+    if (example === false) {
+        throw new Error(`Failed to create ${target} example`);
+    }
+    return example;
 }
 
 type WithoutQuestionMarks<T> = {

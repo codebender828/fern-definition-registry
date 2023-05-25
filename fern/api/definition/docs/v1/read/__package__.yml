@@ -30,16 +30,6 @@ service:
       response: DocsDefinition
       errors:
         - DomainNotRegisteredError
-    getCodeExamplesForEndpoint: 
-      method: POST
-      path: /code-examples
-      request: 
-        name: CodeExamplesForEndpointRequest
-        body: 
-          properties: 
-            httpMethod: apiReadV1Endpoint.HttpMethod
-            examples: list<apiReadV1Endpoint.ExampleEndpointCall>
-      response: CodeExamples
 
 types:
   PageId: string
@@ -61,13 +51,13 @@ types:
       referencedApis: set<rootCommons.ApiDefinitionId>
       files: map<FileId, DbFileInfo>
       config: DocsConfig
-  DbFileInfo: 
-    properties: 
+  DbFileInfo:
+    properties:
       s3Key: string
 
   PageContent:
     properties:
-      markdown: string # eventually PageContent should just be a FileId ? 
+      markdown: string # eventually PageContent should just be a FileId ?
 
   DocsConfig:
     properties:
@@ -105,10 +95,6 @@ types:
 
   ColorsConfig:
     properties: {}
-  
-  CodeExamples: 
-    properties: 
-      fetch: string
 
 errors:
   DomainNotRegisteredError:
