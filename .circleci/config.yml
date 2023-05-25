@@ -32,7 +32,7 @@ jobs:
           command: yarn test
           name: Test
       - run:
-          command: yarn test:tb
+          command: yarn test:db
           name: Test DB
 
   deploy-dev:
