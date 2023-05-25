@@ -88,7 +88,7 @@ function transformEndpoint({
         request: writeShape.request,
         response: writeShape.response,
         examples: examples.map((example) =>
-            transformEndpointEndpointCall({
+            transformExampleEndpointCall({
                 writeShape: example,
                 endpointDefinition: writeShape,
             })
@@ -97,7 +97,8 @@ function transformEndpoint({
     };
 }
 
-function transformEndpointEndpointCall({
+// exported for testing
+export function transformExampleEndpointCall({
     writeShape,
     endpointDefinition,
 }: {
@@ -127,7 +128,7 @@ function createHttpSnippet(
 ) {
     return new HTTPSnippet({
         method: endpointDefinition.method,
-        url: writeShape.path,
+        url: `https://www.google.com${writeShape.path}`,
         postData: {
             mimeType: "application/json",
             text: writeShape.requestBody != null ? JSON.stringify(writeShape.requestBody) : "",
