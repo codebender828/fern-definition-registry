@@ -1,6 +1,7 @@
 import HTTPSnippet from "httpsnippet";
 import { kebabCase } from "lodash";
-import { FernRegistry } from "../../generated";
+import { FernRegistry } from "../../../generated";
+import { generateDummyEndpointExampleCall } from "./generateDummyEndpointExampleCall";
 
 export function transformApiDefinitionForReading(
     writeShape: FernRegistry.api.v1.register.ApiDefinition,
@@ -19,7 +20,9 @@ export function transformApiDefinitionForReading(
     return {
         id,
         rootPackage: {
-            endpoints: writeShape.rootPackage.endpoints.map((endpoint) => transformEndpoint({ writeShape: endpoint })),
+            endpoints: writeShape.rootPackage.endpoints.map((endpoint) =>
+                transformEndpoint({ writeShape: endpoint, apiDefinition: writeShape })
+            ),
             subpackages: writeShape.rootPackage.subpackages,
             types: writeShape.rootPackage.types,
         },
@@ -31,6 +34,7 @@ export function transformApiDefinitionForReading(
                 writeShape: subpackage,
                 id: subpackageId,
                 subpackageToParent,
+                apiDefinition: writeShape,
             });
             return subpackages;
         }, {}),
@@ -41,17 +45,19 @@ function transformSubpackage({
     writeShape,
     id,
     subpackageToParent,
+    apiDefinition,
 }: {
     writeShape: FernRegistry.api.v1.register.ApiDefinitionSubpackage;
     id: FernRegistry.api.v1.register.SubpackageId;
     subpackageToParent: Record<FernRegistry.api.v1.register.SubpackageId, FernRegistry.api.v1.register.SubpackageId>;
+    apiDefinition: FernRegistry.api.v1.register.ApiDefinition;
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.ApiDefinitionSubpackage> {
     const parent = subpackageToParent[id];
     return {
         subpackageId: id,
         parent: parent,
         name: writeShape.name,
-        endpoints: writeShape.endpoints.map((endpoint) => transformEndpoint({ writeShape: endpoint })),
+        endpoints: writeShape.endpoints.map((endpoint) => transformEndpoint({ writeShape: endpoint, apiDefinition })),
         types: writeShape.types,
         subpackages: writeShape.subpackages,
         urlSlug: kebabCase(writeShape.name),
@@ -60,9 +66,16 @@ function transformSubpackage({
 
 function transformEndpoint({
     writeShape,
+    apiDefinition,
 }: {
     writeShape: FernRegistry.api.v1.register.EndpointDefinition;
+    apiDefinition: FernRegistry.api.v1.register.ApiDefinition;
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.EndpointDefinition> {
+    const examples =
+        writeShape.examples.length > 0
+            ? writeShape.examples
+            : [generateDummyEndpointExampleCall(writeShape, apiDefinition)];
+
     return {
         urlSlug: kebabCase(writeShape.name),
         method: writeShape.method,
@@ -73,7 +86,7 @@ function transformEndpoint({
         headers: writeShape.headers,
         request: writeShape.request,
         response: writeShape.response,
-        examples: writeShape.examples.map((example) =>
+        examples: examples.map((example) =>
             transformEndpointEndpointCall({
                 writeShape: example,
                 endpointDefinition: writeShape,

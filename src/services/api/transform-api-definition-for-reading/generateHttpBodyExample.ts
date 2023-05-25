@@ -12,7 +12,7 @@ export function generateHttpBodyExample(
     }
 }
 
-export function generateExampleObject(
+function generateExampleObject(
     object: ApiV1Write.ObjectType,
     resolveTypeById: (typeId: ApiV1Write.TypeId) => ApiV1Write.TypeDefinition
 ): Record<string, unknown> {
@@ -23,7 +23,7 @@ export function generateExampleObject(
     return example;
 }
 
-export function generateExampleFromId(
+function generateExampleFromId(
     id: ApiV1Write.TypeId,
     resolveTypeById: (typeId: ApiV1Write.TypeId) => ApiV1Write.TypeDefinition
 ): unknown {
@@ -82,7 +82,7 @@ export function generateExampleFromTypeReference(
     }
 }
 
-export function generateExamplePrimitive(reference: ApiV1Write.PrimitiveType): string | number | boolean | null {
+function generateExamplePrimitive(reference: ApiV1Write.PrimitiveType): string | number | boolean | null {
     switch (reference.type) {
         case "string":
             return "string";
@@ -105,7 +105,7 @@ export function generateExamplePrimitive(reference: ApiV1Write.PrimitiveType): s
     }
 }
 
-export function getAllObjectProperties(
+function getAllObjectProperties(
     object: ApiV1Write.ObjectType,
     resolveTypeById: (typeId: ApiV1Write.TypeId) => ApiV1Write.TypeDefinition
 ): ApiV1Write.ObjectProperty[] {
