@@ -1,4 +1,4 @@
-import { assertNever } from "src/assertNever";
+import { assertNever } from "../../../assertNever";
 import * as ApiV1Write from "../../../generated/api/resources/api/resources/v1/resources/register";
 
 export function generateHttpBodyExample(
