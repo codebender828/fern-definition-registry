@@ -1,14 +1,14 @@
+import { EnvironmentInfo, EnvironmentType } from "@fern-fern/fern-cloud-sdk/api";
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
-import { Construct } from "constructs";
-import { EnvironmentInfo, EnvironmentType } from "@fern-fern/fern-cloud-client/model/environments";
-import { SecurityGroup, Vpc, Peer, Port } from "aws-cdk-lib/aws-ec2";
-import { Bucket } from "aws-cdk-lib/aws-s3";
-import { Cluster, ContainerImage, LogDriver, Volume } from "aws-cdk-lib/aws-ecs";
-import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
+import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
+import { Cluster, ContainerImage, LogDriver, Volume } from "aws-cdk-lib/aws-ecs";
 import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patterns";
 import { ApplicationProtocol } from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { Construct } from "constructs";
 
 const CONTAINER_NAME = "fern-definition-registry";
 const SERVICE_NAME = "fdr";
