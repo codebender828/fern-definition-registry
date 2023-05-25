@@ -128,7 +128,7 @@ function createHttpSnippet(
 ) {
     return new HTTPSnippet({
         method: endpointDefinition.method,
-        url: `https://www.google.com${writeShape.path}`,
+        url: `http://localhost:8080${writeShape.path}`,
         postData: {
             mimeType: "application/json",
             text: writeShape.requestBody != null ? JSON.stringify(writeShape.requestBody) : "",

@@ -66,7 +66,7 @@ describe("transformEndpointEndpointCall", () => {
 
 var options = {
   method: 'POST',
-  url: 'https://www.google.com/prefix/path-param-value/suffix',
+  url: 'http://localhost:8080/prefix/path-param-value/suffix',
   params: {queryParam: '123'},
   headers: {header: 'true'}
 };
