@@ -18,7 +18,7 @@ service:
         body:
           properties:
             domain: string
-            alternativeDomainNames: list<string>
+            alternativeDomainNames: optional<list<string>>
             orgId: rootCommons.OrgId
             filepaths:
               type: list<FilePath>
