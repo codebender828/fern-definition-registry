@@ -98,7 +98,7 @@ types:
     properties:
       title: string
       api: rootCommons.ApiDefinitionId
-      artifacts: ApiArtifacts
+      artifacts: optional<ApiArtifacts>
 
   DocsSection:
     properties:
@@ -118,6 +118,12 @@ types:
   ApiArtifacts:
     properties:
       sdks: list<PublishedSdk>
+      postman: optional<PublishedPostmanCollection>
+  
+  PublishedPostmanCollection: 
+    properties: 
+      url: string
+      githubRepoName: optional<string>
 
   PublishedSdk:
     union:
@@ -129,16 +135,19 @@ types:
     properties:
       packageName: string
       githubRepoName: string
+      version: string
 
   MavenPackage:
     properties:
       coordinate: string
       githubRepoName: string
+      version: string
 
   PypiPackage:
     properties:
       packageName: string
       githubRepoName: string
+      version: string
 
 errors:
   DocsRegistrationIdNotFound:

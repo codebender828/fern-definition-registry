@@ -101,7 +101,7 @@ types:
       title: string
       api: rootCommons.ApiDefinitionId
       urlSlug: string
-      artifacts: ApiArtifacts
+      artifacts: optional<ApiArtifacts>
 
   DocsSection:
     properties:
@@ -122,6 +122,12 @@ types:
   ApiArtifacts:
     properties:
       sdks: list<PublishedSdk>
+      postman: optional<PublishedPostmanCollection>
+  
+  PublishedPostmanCollection: 
+    properties: 
+      url: string
+      githubRepo: optional<GitHubRepo>
 
   PublishedSdk:
     union:
@@ -133,16 +139,19 @@ types:
     properties:
       packageName: string
       githubRepo: GitHubRepo
+      version: string
 
   MavenPackage:
     properties:
       coordinate: string
       githubRepo: GitHubRepo
+      version: string
 
   PypiPackage:
     properties:
       packageName: string
       githubRepo: GitHubRepo
+      version: string
 
   GitHubRepo:
     properties:
