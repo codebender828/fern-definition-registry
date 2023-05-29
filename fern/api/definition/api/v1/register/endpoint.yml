@@ -89,6 +89,21 @@ types:
       pathParameters: map<PathParameterKey, unknown>
       queryParameters: map<string, unknown>
       headers: map<string, unknown>
-      requestBody: unknown
+      requestBody: optional<ExampleEndpointRequest> 
       responseStatusCode: integer
-      responseBody: unknown
+      responseBody: optional<ExampleEndpointResponse>
+  
+  ExampleEndpointRequest: 
+    properties: 
+      json: unknown
+      form: map<string, FormValue>
+  
+  FormValue: 
+    union: 
+      json: unknown
+      filename: string
+  
+  ExampleEndpointResponse: 
+    properties: 
+      json: unknown
+      filename: string
