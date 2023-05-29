@@ -101,6 +101,7 @@ types:
       title: string
       api: rootCommons.ApiDefinitionId
       urlSlug: string
+      artifacts: ApiArtifacts
 
   DocsSection:
     properties:
@@ -117,6 +118,36 @@ types:
       r: integer
       g: integer
       b: integer
+
+  ApiArtifacts:
+    properties:
+      sdks: list<PublishedSdk>
+
+  PublishedSdk:
+    union:
+      npm: NpmPackage
+      maven: MavenPackage
+      pypi: PypiPackage
+
+  NpmPackage:
+    properties:
+      packageName: string
+      githubRepo: GitHubRepo
+
+  MavenPackage:
+    properties:
+      coordinate: string
+      githubRepo: GitHubRepo
+
+  PypiPackage:
+    properties:
+      packageName: string
+      githubRepo: GitHubRepo
+
+  GitHubRepo:
+    properties:
+      name: string
+      url: string
 
 errors:
   DomainNotRegisteredError:
