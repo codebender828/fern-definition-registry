@@ -90,9 +90,11 @@ types:
       pathParameters: map<PathParameterKey, unknown>
       queryParameters: map<string, unknown>
       headers: map<string, unknown>
-      requestBody: optional<ExampleEndpointRequest> 
+      requestBody: unknown
+      requestBodyV2: optional<ExampleEndpointRequest> 
       responseStatusCode: integer
-      responseBody: optional<ExampleEndpointResponse>
+      responseBody: unknown
+      responseBodyV2: optional<ExampleEndpointResponse>
       codeExamples: CodeExamples
 
   CodeExamples:
