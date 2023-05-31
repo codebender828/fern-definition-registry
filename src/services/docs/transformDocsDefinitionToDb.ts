@@ -26,8 +26,10 @@ export function transformWriteDocsDefinitionToDb({
         referencedApis: new Set(getReferencedApiDefinitionIds(navigationConfig)),
         files: transformedFiles,
         config: {
-            ...writeShape.config,
             navigation: navigationConfig,
+            logo: writeShape.config.logo,
+            colors: writeShape.config.colors,
+            navbarLinks: (writeShape.config.navbarLinks ?? []).map((link) => transformNavbarLinkForReading(link)),
         },
         pages: writeShape.pages,
         colors: {
@@ -142,5 +144,38 @@ function transformPublishedPostmanCollectionForReading(
                       url: `https://github.com/${writeShape.githubRepoName}`,
                   }
                 : undefined,
+    };
+}
+
+function transformNavbarLinkForReading(
+    writeShape: FernRegistry.docs.v1.write.NavbarLink
+): WithoutQuestionMarks<FernRegistry.docs.v1.read.NavbarLink> {
+    if (writeShape.url.includes("github")) {
+        return {
+            type: "github",
+            style: writeShape.style,
+            text: writeShape.text,
+            url: writeShape.url,
+        };
+    } else if (writeShape.url.includes("discord")) {
+        return {
+            type: "discord",
+            style: writeShape.style,
+            text: writeShape.text,
+            url: writeShape.url,
+        };
+    } else if (writeShape.url.includes("twitter")) {
+        return {
+            type: "twitter",
+            style: writeShape.style,
+            text: writeShape.text,
+            url: writeShape.url,
+        };
+    }
+    return {
+        type: "generic",
+        style: writeShape.style,
+        text: writeShape.text,
+        url: writeShape.url,
     };
 }

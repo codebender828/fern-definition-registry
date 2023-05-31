@@ -79,6 +79,7 @@ types:
       navigation: NavigationConfig
       logo: optional<FileId>
       colors: optional<ColorsConfig>
+      navbarLinks: list<NavbarLink>
 
   NavigationConfig:
     properties:
@@ -95,6 +96,23 @@ types:
       id: PageId
       title: string
       urlSlug: string
+  
+  NavbarLink: 
+    union: 
+      github: NavbarLinkBase
+      discord: NavbarLinkBase
+      twitter: NavbarLinkBase
+      generic: NavbarLinkBase
+
+  NavbarLinkBase: 
+    properties: 
+      text: string
+      url: string
+      style: optional<NavbarLinkStyle>
+  
+  NavbarLinkStyle: 
+    enum: 
+      - PRIMARY
 
   ApiSection:
     properties:
