@@ -98,21 +98,23 @@ types:
       urlSlug: string
   
   NavbarLink: 
-    union: 
-      github: NavbarLinkBase
-      discord: NavbarLinkBase
-      twitter: NavbarLinkBase
-      generic: NavbarLinkBase
-
-  NavbarLinkBase: 
     properties: 
       text: string
       url: string
-      style: optional<NavbarLinkStyle>
+      style: NavbarLinkStyle
+      linkType: LinkType
+  
+  LinkType:
+    union: 
+      github: {}
+      discord: {}
+      twitter: {}
+      generic: {}
   
   NavbarLinkStyle: 
     enum: 
       - PRIMARY
+      - DEFAULT
 
   ApiSection:
     properties:

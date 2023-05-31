@@ -150,32 +150,18 @@ function transformPublishedPostmanCollectionForReading(
 function transformNavbarLinkForReading(
     writeShape: FernRegistry.docs.v1.write.NavbarLink
 ): WithoutQuestionMarks<FernRegistry.docs.v1.read.NavbarLink> {
+    let linkType: FernRegistry.docs.v1.read.LinkType = { type: "generic" };
     if (writeShape.url.includes("github")) {
-        return {
-            type: "github",
-            style: writeShape.style,
-            text: writeShape.text,
-            url: writeShape.url,
-        };
+        linkType = { type: "github" };
     } else if (writeShape.url.includes("discord")) {
-        return {
-            type: "discord",
-            style: writeShape.style,
-            text: writeShape.text,
-            url: writeShape.url,
-        };
+        linkType = { type: "discord" };
     } else if (writeShape.url.includes("twitter")) {
-        return {
-            type: "twitter",
-            style: writeShape.style,
-            text: writeShape.text,
-            url: writeShape.url,
-        };
+        linkType = { type: "twitter" };
     }
     return {
-        type: "generic",
-        style: writeShape.style,
+        style: writeShape.style ?? "DEFAULT",
         text: writeShape.text,
         url: writeShape.url,
+        linkType,
     };
 }
