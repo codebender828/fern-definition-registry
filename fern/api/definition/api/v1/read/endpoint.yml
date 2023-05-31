@@ -10,6 +10,7 @@ types:
   EndpointDefinition:
     extends: commons.WithDescription
     properties:
+      auth: boolean
       method: HttpMethod
       id: EndpointId
       urlSlug: string

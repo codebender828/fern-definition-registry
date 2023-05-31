@@ -4,6 +4,8 @@ imports:
   endpoint: endpoint.yml
   type: type.yml
   rootCommons: ../../../commons.yml
+  commons: commons.yml
+  auth: auth.yml
 
 service:
   base-path: /registry/api
@@ -27,6 +29,7 @@ types:
       rootPackage: ApiDefinitionPackage
       types: map<type.TypeId, type.TypeDefinition>
       subpackages: map<SubpackageId, ApiDefinitionSubpackage>
+      auth: optional<auth.ApiAuth>
 
   ApiDefinitionPackage:
     properties:
@@ -40,7 +43,9 @@ types:
         type: optional<SubpackageId>
 
   ApiDefinitionSubpackage:
-    extends: ApiDefinitionPackage
+    extends: 
+      - ApiDefinitionPackage
+      - commons.WithDescription
     properties:
       parent: optional<SubpackageId>
       subpackageId: SubpackageId

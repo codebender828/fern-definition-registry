@@ -1,0 +1,26 @@
+imports: 
+  commons: commons.yml
+
+types: 
+  ApiAuth: 
+    union:
+      bearer: BearerAuth
+      basic: BasicAuth
+      header: HeaderAuth
+  
+  BearerAuth:
+    extends: commons.WithDescription
+    properties:
+      tokenNameOverride: optional<string>
+  
+  BasicAuth:
+    extends: commons.WithDescription
+    properties:
+      usernameNameOverride: optional<string>
+      passwordNameOverride: optional<string>
+  
+  HeaderAuth:
+    extends: commons.WithDescription
+    properties:
+      name: string
+      prefix: optional<string> 

@@ -4,6 +4,7 @@ imports:
   endpoint: endpoint.yml
   type: type.yml
   rootCommons: ../../../commons.yml
+  commons: commons.yml
 
 service:
   auth: true
@@ -30,13 +31,13 @@ types:
   RegisterApiDefinitionResponse:
     properties:
       apiDefinitionId: rootCommons.ApiDefinitionId
-
-  # This type is also stored in the database
+      
   ApiDefinition:
     properties:
       rootPackage: ApiDefinitionPackage
       types: map<type.TypeId, type.TypeDefinition>
       subpackages: map<SubpackageId, ApiDefinitionSubpackage>
+      auth: optional<auth.ApiAuth>
 
   ApiDefinitionPackage:
     properties:
@@ -50,7 +51,9 @@ types:
         type: optional<SubpackageId>
 
   ApiDefinitionSubpackage:
-    extends: ApiDefinitionPackage
+    extends: 
+      - ApiDefinitionPackage
+      - commons.WithDescription
     properties:
       subpackageId: SubpackageId
       name: string

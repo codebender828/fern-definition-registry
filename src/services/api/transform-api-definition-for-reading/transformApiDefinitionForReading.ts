@@ -56,6 +56,7 @@ function transformSubpackage({
     const parent = subpackageToParent[id];
     return {
         subpackageId: id,
+        description: writeShape.,
         parent: parent,
         name: writeShape.name,
         endpoints: writeShape.endpoints.map((endpoint) => transformEndpoint({ writeShape: endpoint, apiDefinition })),
