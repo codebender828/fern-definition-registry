@@ -80,7 +80,7 @@ function transformEndpoint({
             : [generateDummyEndpointExampleCall(writeShape, apiDefinition)];
 
     return {
-        environments: writeShape.environments,
+        environments: writeShape.environments ?? [],
         defaultEnvironment: writeShape.defaultEnvironment,
         urlSlug: kebabCase(writeShape.name),
         method: writeShape.method,

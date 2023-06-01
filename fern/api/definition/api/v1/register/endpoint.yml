@@ -13,7 +13,7 @@ types:
     extends: commons.WithDescription
     properties:
       defaultEnvironment: optional<EnvironmentId>
-      environments: list<Environment>
+      environments: optional<list<Environment>>
       method: HttpMethod
       id: EndpointId
       name: optional<string>
