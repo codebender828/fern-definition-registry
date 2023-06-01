@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import * as FernRegistryApiDb from "../../generated/api/resources/api/resources/v1/resources/db";
+import * as FernRegistryApiRead from "../../generated/api/resources/api/resources/v1/resources/read";
 import { ApiDoesNotExistError } from "../../generated/api/resources/api/resources/v1/resources/read/errors/ApiDoesNotExistError";
 import { ReadService } from "../../generated/api/resources/api/resources/v1/resources/read/service/ReadService";
 import * as FernSerializers from "../../generated/serialization";
@@ -17,13 +17,14 @@ export function getReadApiService(prisma: PrismaClient): ReadService {
             if (apiDefinition == null) {
                 throw new ApiDoesNotExistError();
             }
-            const parsedApiDefinition = await convertDbApiDefinitionToRead(apiDefinition.definition);
-            return res.send(transformApiDefinitionForReading(parsedApiDefinition));
+            const readApiDefinition = await convertDbApiDefinitionToRead(apiDefinition.definition);
+            return res.send(readApiDefinition);
         },
     });
 }
 
-export async function convertDbApiDefinitionToRead(buffer: Buffer): Promise<FernRegistryApiDb.DbApiDefinition> {
+export async function convertDbApiDefinitionToRead(buffer: Buffer): Promise<FernRegistryApiRead.ApiDefinition> {
     const apiDefinitionJson = readBuffer(buffer);
-    return await FernSerializers.api.v1.db.DbApiDefinition.parseOrThrow(apiDefinitionJson);
+    const dbApiDefinition = await FernSerializers.api.v1.db.DbApiDefinition.parseOrThrow(apiDefinitionJson);
+    return transformApiDefinitionForReading(dbApiDefinition);
 }
