@@ -12,6 +12,7 @@ service:
     - read
   endpoints:
     getDocsForDomainLegacy:
+      availability: deprecated
       method: GET
       path: /load/{domain}
       path-parameters:
@@ -19,7 +20,9 @@ service:
       response: DocsDefinition
       errors:
         - DomainNotRegisteredError
+    
     getDocsForDomain:
+      availability: deprecated
       method: POST
       path: /load
       request:
@@ -30,6 +33,18 @@ service:
       response: DocsDefinition
       errors:
         - DomainNotRegisteredError
+    
+    getDocsForUrl:
+      method: POST
+      path: /load-with-url
+      request:
+        name: LoadDocsForUrlRequest
+        body:
+          properties:
+            url: string
+      response: LoadDocsForUrlResponse
+      errors:
+        - DomainNotRegisteredError
 
 types:
   PageId: string
@@ -37,6 +52,11 @@ types:
   Url: string
 
   FileId: string
+
+  LoadDocsForUrlResponse: 
+    properties: 
+      baseUrl: string
+      definition: DocsDefinition
 
   DocsDefinition:
     properties:

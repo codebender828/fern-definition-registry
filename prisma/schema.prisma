@@ -26,3 +26,18 @@ model Docs {
 
   @@id([url])
 }
+
+model DocsDomains {
+  domain           String
+  path             String
+  docsDefinitionId String
+
+  @@id([domain, path])
+}
+
+model DocsDefinitionsV2 {
+  docsDefinitionId String
+  docsDefinition   Bytes
+
+  @@id([docsDefinitionId])
+}
