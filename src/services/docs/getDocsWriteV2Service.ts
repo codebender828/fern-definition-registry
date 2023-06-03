@@ -16,7 +16,7 @@ import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb"
 const DOCS_REGISTRATIONS: Record<DocsRegistrationId, DocsRegistrationInfo> = {};
 
 interface DocsRegistrationInfo {
-    domain: string;
+    fernDomain: string;
     customDomains: ParsedCustomDomain[];
     apiId: ApiId;
     orgId: OrgId;
@@ -78,7 +78,7 @@ export function getDocsWriteV2Service(
                 filepaths: req.body.filepaths,
             });
             DOCS_REGISTRATIONS[docsRegistrationId] = {
-                domain,
+                fernDomain: domain,
                 customDomains,
                 orgId: req.body.orgId,
                 apiId: req.body.apiId,
@@ -114,6 +114,26 @@ export function getDocsWriteV2Service(
             const jsonDocsDefinition = await FernSerializers.docs.v1.db.DocsDefinitionDb.jsonOrThrow(dbDocsDefinition);
             const bufferDocsDefinition = writeBuffer(jsonDocsDefinition);
             await prisma.$transaction(async (tx) => {
+                await tx.docsV2.upsert({
+                    where: {
+                        domain_path: {
+                            domain: docsRegistrationInfo.fernDomain,
+                            path: "",
+                        },
+                    },
+                    create: {
+                        docsDefinition: bufferDocsDefinition,
+                        domain: docsRegistrationInfo.fernDomain,
+                        path: "",
+                        apiName: docsRegistrationInfo.apiId,
+                        orgID: docsRegistrationInfo.orgId,
+                    },
+                    update: {
+                        docsDefinition: bufferDocsDefinition,
+                        apiName: docsRegistrationInfo.apiId,
+                        orgID: docsRegistrationInfo.orgId,
+                    },
+                });
                 await Promise.all(
                     docsRegistrationInfo.customDomains.map(async (customDomain) => {
                         await tx.docsV2.upsert({
