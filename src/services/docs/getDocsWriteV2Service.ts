@@ -114,28 +114,30 @@ export function getDocsWriteV2Service(
             const jsonDocsDefinition = await FernSerializers.docs.v1.db.DocsDefinitionDb.jsonOrThrow(dbDocsDefinition);
             const bufferDocsDefinition = writeBuffer(jsonDocsDefinition);
             await prisma.$transaction(async (tx) => {
-                docsRegistrationInfo.customDomains.map(async (customDomain) => {
-                    await tx.docsV2.upsert({
-                        where: {
-                            domain_path: {
+                await Promise.all(
+                    docsRegistrationInfo.customDomains.map(async (customDomain) => {
+                        await tx.docsV2.upsert({
+                            where: {
+                                domain_path: {
+                                    domain: customDomain.hostname,
+                                    path: customDomain.path,
+                                },
+                            },
+                            create: {
+                                docsDefinition: bufferDocsDefinition,
                                 domain: customDomain.hostname,
                                 path: customDomain.path,
+                                apiName: docsRegistrationInfo.apiId,
+                                orgID: docsRegistrationInfo.orgId,
                             },
-                        },
-                        create: {
-                            docsDefinition: bufferDocsDefinition,
-                            domain: customDomain.hostname,
-                            path: customDomain.path,
-                            apiName: docsRegistrationInfo.apiId,
-                            orgID: docsRegistrationInfo.orgId,
-                        },
-                        update: {
-                            docsDefinition: bufferDocsDefinition,
-                            apiName: docsRegistrationInfo.apiId,
-                            orgID: docsRegistrationInfo.orgId,
-                        },
-                    });
-                });
+                            update: {
+                                docsDefinition: bufferDocsDefinition,
+                                apiName: docsRegistrationInfo.apiId,
+                                orgID: docsRegistrationInfo.orgId,
+                            },
+                        });
+                    })
+                );
             });
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
