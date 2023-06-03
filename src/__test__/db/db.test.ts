@@ -8,7 +8,9 @@ import { register } from "../../generated";
 import { getReadApiService } from "../../services/api/getApiReadService";
 import { getRegisterApiService } from "../../services/api/getRegisterApiService";
 import { getDocsReadService } from "../../services/docs/getDocsReadService";
+import { getDocsReadV2Service } from "../../services/docs/getDocsReadV2Service";
 import { getDocsWriteService } from "../../services/docs/getDocsWriteService";
+import { getDocsWriteV2Service } from "../../services/docs/getDocsWriteV2Service";
 import { FernRegistry, FernRegistryClient } from "../generated";
 
 const PORT = 9999;
@@ -39,6 +41,7 @@ beforeAll(async () => {
         s3BucketRegion: "us-east-1",
         venusUrl: "",
         s3UrlOverride: "http://s3-mock:9090",
+        domainSuffix: ".docs.buildwithfern.com",
     };
     const s3Utils = new S3UtilsImpl(config);
     register(app, {
@@ -46,6 +49,10 @@ beforeAll(async () => {
             v1: {
                 read: getDocsReadService(prisma, s3Utils),
                 write: getDocsWriteService(prisma, authUtils, s3Utils),
+            },
+            v2: {
+                read: getDocsReadV2Service(prisma, s3Utils),
+                write: getDocsWriteV2Service(prisma, authUtils, s3Utils, config),
             },
         },
         api: {

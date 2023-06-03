@@ -33,18 +33,6 @@ service:
       response: DocsDefinition
       errors:
         - DomainNotRegisteredError
-    
-    getDocsForUrl:
-      method: POST
-      path: /load-with-url
-      request:
-        name: LoadDocsForUrlRequest
-        body:
-          properties:
-            url: string
-      response: LoadDocsForUrlResponse
-      errors:
-        - DomainNotRegisteredError
 
 types:
   PageId: string

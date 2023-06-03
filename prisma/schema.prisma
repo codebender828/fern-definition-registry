@@ -27,17 +27,12 @@ model Docs {
   @@id([url])
 }
 
-model DocsDomains {
-  domain           String
-  path             String
-  docsDefinitionId String
+model DocsV2 {
+  orgID          String
+  apiName        String
+  domain         String
+  path           String
+  docsDefinition Bytes
 
   @@id([domain, path])
-}
-
-model DocsDefinitionsV2 {
-  docsDefinitionId String
-  docsDefinition   Bytes
-
-  @@id([docsDefinitionId])
 }

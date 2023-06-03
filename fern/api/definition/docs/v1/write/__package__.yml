@@ -23,26 +23,6 @@ service:
               type: list<FilePath>
               docs: Relative filepath from docs folder.
       response: StartDocsRegisterResponse
-    
-    startDocsRegisterV2: 
-      auth: true
-      path: /v2/init
-      request:
-        name: StartDocsRegisterRequestV2
-        body:
-          properties:
-            domain: 
-              type: string
-              docs: A `buildwithfern.com` url
-            customDomains: list<string>
-            orgId: rootCommons.OrgId
-            filepaths:
-              type: list<FilePath>
-              docs: Relative filepath from docs folder.
-      response: StartDocsRegisterResponse
-      errors: 
-        - InvalidDomainError
-        - InvliadCustomDomainError
 
     finishDocsRegister:
       auth: true
@@ -195,11 +175,3 @@ types:
 errors:
   DocsRegistrationIdNotFound:
     status-code: 404
-
-  InvalidDomainError: 
-    status-code: 400
-    type: InvalidDomainErrorBody
-  
-  InvliadCustomDomainError: 
-    status-code: 400
-    type: InvliadCustomDomainErrorBody
