@@ -175,3 +175,43 @@ it("docs register", async () => {
         docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
     });
 });
+
+it("docs register V2", async () => {
+    // register docs
+    const startDocsRegisterResponse = await CLIENT.docs.v2.write.startDocsRegister({
+        orgId: "acme",
+        apiId: "api",
+        domain: "https://acme.docs.buildwithfern.com",
+        customDomains: ["https://docs.useacme.com/docs"],
+        filepaths: ["logo.png", "guides/guide.mdx"],
+    });
+    await CLIENT.docs.v2.write.finishDocsRegister(startDocsRegisterResponse.docsRegistrationId, {
+        docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
+    });
+    // load docs
+    let docs = await CLIENT.docs.v2.read.getDocsForUrl({
+        url: "https://acme.docs.buildwithfern.com/my/random/slug",
+    });
+    expect(docs.baseUrl.domain).toEqual("acme.docs.buildwithfern.com");
+    expect(Object.entries(docs.definition.files)).toHaveLength(2);
+
+    // load docs again
+    docs = await CLIENT.docs.v2.read.getDocsForUrl({
+        url: "https://docs.useacme.com/docs/1/",
+    });
+    expect(docs.baseUrl.domain).toEqual("docs.useacme.com");
+    expect(docs.baseUrl.basePath).toEqual("/docs");
+    expect(Object.entries(docs.definition.files)).toHaveLength(2);
+
+    //re-register docs
+    const startDocsRegisterResponse2 = await CLIENT.docs.v2.write.startDocsRegister({
+        orgId: "acme",
+        apiId: "api",
+        domain: "https://acme.docs.buildwithfern.com",
+        customDomains: ["https://docs.useacme.com"],
+        filepaths: [],
+    });
+    await CLIENT.docs.v2.write.finishDocsRegister(startDocsRegisterResponse2.docsRegistrationId, {
+        docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
+    });
+});

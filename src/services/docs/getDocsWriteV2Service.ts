@@ -112,20 +112,29 @@ export function getDocsWriteV2Service(
                 ).join(", ")}`
             );
             const jsonDocsDefinition = await FernSerializers.docs.v1.db.DocsDefinitionDb.jsonOrThrow(dbDocsDefinition);
+            const bufferDocsDefinition = writeBuffer(jsonDocsDefinition);
             await prisma.$transaction(async (tx) => {
-                tx.docsV2.deleteMany({
-                    where: { orgID: docsRegistrationInfo.orgId, apiName: docsRegistrationInfo.apiId },
-                });
-                await tx.docsV2.createMany({
-                    data: docsRegistrationInfo.customDomains.map((customDomain) => {
-                        return {
-                            docsDefinition: writeBuffer(jsonDocsDefinition),
+                docsRegistrationInfo.customDomains.map(async (customDomain) => {
+                    await tx.docsV2.upsert({
+                        where: {
+                            domain_path: {
+                                domain: customDomain.hostname,
+                                path: customDomain.path,
+                            },
+                        },
+                        create: {
+                            docsDefinition: bufferDocsDefinition,
                             domain: customDomain.hostname,
                             path: customDomain.path,
                             apiName: docsRegistrationInfo.apiId,
                             orgID: docsRegistrationInfo.orgId,
-                        };
-                    }),
+                        },
+                        update: {
+                            docsDefinition: bufferDocsDefinition,
+                            apiName: docsRegistrationInfo.apiId,
+                            orgID: docsRegistrationInfo.orgId,
+                        },
+                    });
                 });
             });
 

@@ -26,8 +26,13 @@ service:
 types:
   LoadDocsForUrlResponse: 
     properties: 
-      baseUrl: string
+      baseUrl: BaseUrl
       definition: v1DocsRead.DocsDefinition
+  
+  BaseUrl: 
+    properties: 
+      domain: string
+      basePath: optional<string>
 
 errors:
   DomainNotRegisteredError:

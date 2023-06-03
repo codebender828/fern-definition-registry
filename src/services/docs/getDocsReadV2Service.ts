@@ -15,6 +15,9 @@ export function getDocsReadV2Service(prisma: PrismaClient, s3Utils: S3Utils): Re
                 where: {
                     domain: parsedUrl.hostname,
                 },
+                orderBy: {
+                    updatedTime: "desc",
+                },
             });
             const docsDomain = possibleDocs.find((registeredDocs) => {
                 return parsedUrl.pathname.startsWith(registeredDocs.path);
@@ -23,7 +26,10 @@ export function getDocsReadV2Service(prisma: PrismaClient, s3Utils: S3Utils): Re
                 const docsDefinitionJson = readBuffer(docsDomain.docsDefinition);
                 const parsedDocsDbDefinition = await parseDocsDbDefinition(docsDefinitionJson);
                 return res.send({
-                    baseUrl: `https://${docsDomain.domain}${docsDomain.path}`,
+                    baseUrl: {
+                        domain: docsDomain.domain,
+                        basePath: docsDomain.path === "" ? undefined : docsDomain.path,
+                    },
                     definition: await getDocsDefinition({ parsedDocsDbDefinition, prisma, s3Utils }),
                 });
             } else {
@@ -33,7 +39,10 @@ export function getDocsReadV2Service(prisma: PrismaClient, s3Utils: S3Utils): Re
                     throw new DomainNotRegisteredError();
                 }
                 return res.send({
-                    baseUrl: `https://${parsedUrl}`,
+                    baseUrl: {
+                        domain: parsedUrl.hostname,
+                        basePath: undefined,
+                    },
                     definition: await getDocsForDomain({ domain: v1Domain, prisma, s3Utils }),
                 });
             }
