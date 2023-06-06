@@ -7,6 +7,8 @@ import {
     generateHttpResponseBodyExample,
 } from "./generateHttpBodyExample";
 
+const MAX_OPTIONAL_EXAMPLES_FOR_QUERY_PARAMS = 2;
+
 export function generateDummyEndpointExampleCall(
     endpointDefinition: ApiV1Write.EndpointDefinition,
     apiDefinition: ApiV1Write.ApiDefinition
