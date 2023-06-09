@@ -132,7 +132,7 @@ export function transformExampleEndpointCall({
         responseStatusCode: writeShape.responseStatusCode,
         responseBody: writeShape.responseBody,
         codeExamples: {
-            nodeAxios: convertHttpSnippet(httpSnippet, "node", "axios"),
+            nodeAxios: "",
         },
         requestBodyV2: undefined,
         responseBodyV2: undefined,
