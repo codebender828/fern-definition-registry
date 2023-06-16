@@ -1,12 +1,26 @@
 import { PrismaClient } from "@prisma/client";
-import { Response } from "express";
+import { Express, Response } from "express";
 import { DomainNotRegisteredError } from "../../generated/api/resources/docs/resources/v1/resources/read/errors/DomainNotRegisteredError";
+import { ReadService as ReadV2Service } from "../../generated/api/resources/docs/resources/v2/resources/read/service/ReadService";
 import { getParsedUrl } from "../../getParsedUrl";
 import { S3Utils } from "../../S3Utils";
 import { readBuffer } from "../../serdeUtils";
 import { getDocsDefinition, getDocsForDomain, migrateDocsDbDefinition } from "./getDocsReadService";
 
 const DOCS_DOMAIN_REGX = /^([^.\s]+)/;
+
+export function getDocsReadV2Service(): ReadV2Service {
+    return new ReadV2Service({});
+}
+
+export function registerDocsReadV2Service(app: Express, prisma: PrismaClient, s3Utils: S3Utils): void {
+    const service = new DocsReadV2Service(prisma, s3Utils);
+
+    // manually register read docs v2 to avoid zurg's slowness
+    app.post("/v2/registry/docs/load-with-url", async (req, res) => {
+        await service.getDocsForUrl(req.body.url, res);
+    });
+}
 
 export class DocsReadV2Service {
     constructor(private readonly prisma: PrismaClient, private readonly s3Utils: S3Utils) {}
