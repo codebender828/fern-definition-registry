@@ -4,33 +4,35 @@ imports:
   rootCommons: ../../../commons.yml
   v1DocsRead: ../../v1/read/__package__.yml
 
-
 service:
   base-path: /v2/registry/docs
   auth: false
   audiences:
     - read
   endpoints:
-    getDocsForUrl:
-      method: POST
-      path: /load-with-url
-      request:
-        name: LoadDocsForUrlRequest
-        body:
-          properties:
-            url: string
-      response: LoadDocsForUrlResponse
-      errors:
-        - DomainNotRegisteredError
+    {}
+    # this is manually defined in express to avoid zurg slowness
+    #
+    # getDocsForUrl:
+    #   method: POST
+    #   path: /load-with-url
+    #   request:
+    #     name: LoadDocsForUrlRequest
+    #     body:
+    #       properties:
+    #         url: string
+    #   response: LoadDocsForUrlResponse
+    #   errors:
+    #     - DomainNotRegisteredError
 
 types:
-  LoadDocsForUrlResponse: 
-    properties: 
+  LoadDocsForUrlResponse:
+    properties:
       baseUrl: BaseUrl
       definition: v1DocsRead.DocsDefinition
-  
-  BaseUrl: 
-    properties: 
+
+  BaseUrl:
+    properties:
       domain: string
       basePath: optional<string>
 
