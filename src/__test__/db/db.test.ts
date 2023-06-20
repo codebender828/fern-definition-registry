@@ -1,16 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import axios from "axios";
 import express from "express";
 import http from "http";
 import { AuthUtils } from "../../AuthUtils";
 import { FdrConfig } from "../../config";
 import { register } from "../../generated";
-import * as FernSerializers from "../../generated/serialization";
 import { S3UtilsImpl } from "../../S3Utils";
 import { getReadApiService } from "../../services/api/getApiReadService";
 import { getRegisterApiService } from "../../services/api/getRegisterApiService";
 import { getDocsReadService } from "../../services/docs/getDocsReadService";
-import { getDocsReadV2Service, registerDocsReadV2Service } from "../../services/docs/getDocsReadV2Service";
+import { getDocsReadV2Service } from "../../services/docs/getDocsReadV2Service";
 import { getDocsWriteService } from "../../services/docs/getDocsWriteService";
 import { getDocsWriteV2Service } from "../../services/docs/getDocsWriteV2Service";
 import { FernRegistry, FernRegistryClient } from "../generated";
@@ -23,9 +21,8 @@ class MockAuthUtils implements AuthUtils {
     }
 }
 
-const SERVER_URL = `http://localhost:${PORT}/`;
 const CLIENT = new FernRegistryClient({
-    environment: SERVER_URL,
+    environment: `http://localhost:${PORT}/`,
     token: "dummy",
 });
 
@@ -54,7 +51,7 @@ beforeAll(async () => {
                 write: { _root: getDocsWriteService(prisma, authUtils, s3Utils) },
             },
             v2: {
-                read: { _root: getDocsReadV2Service() },
+                read: { _root: getDocsReadV2Service(prisma, s3Utils) },
                 write: { _root: getDocsWriteV2Service(prisma, authUtils, s3Utils, config) },
             },
         },
@@ -65,7 +62,6 @@ beforeAll(async () => {
             },
         },
     });
-    registerDocsReadV2Service(app, prisma, s3Utils);
     console.log(`Listening for requests on port ${PORT}`);
     server = app.listen(PORT);
 });
@@ -193,14 +189,14 @@ it("docs register V2", async () => {
         docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
     });
     // load docs
-    let docs = await getDocsForUrl({
+    let docs = await CLIENT.docs.v2.read.getDocsForUrl({
         url: "https://acme.docs.buildwithfern.com/my/random/slug",
     });
     expect(docs.baseUrl.domain).toEqual("acme.docs.buildwithfern.com");
     expect(Object.entries(docs.definition.files)).toHaveLength(2);
 
     // load docs again
-    docs = await getDocsForUrl({
+    docs = await CLIENT.docs.v2.read.getDocsForUrl({
         url: "https://docs.useacme.com/docs/1/",
     });
     expect(docs.baseUrl.domain).toEqual("docs.useacme.com");
@@ -219,12 +215,3 @@ it("docs register V2", async () => {
         docsDefinition: WRITE_DOCS_REGISTER_DEFINITION,
     });
 });
-
-async function getDocsForUrl({
-    url,
-}: {
-    url: string;
-}): Promise<FernSerializers.docs.v2.read.LoadDocsForUrlResponse.Raw> {
-    const response = await axios.post(SERVER_URL, { url });
-    return response.data;
-}

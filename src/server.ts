@@ -8,7 +8,7 @@ import { S3UtilsImpl } from "./S3Utils";
 import { getReadApiService } from "./services/api/getApiReadService";
 import { getRegisterApiService } from "./services/api/getRegisterApiService";
 import { getDocsReadService } from "./services/docs/getDocsReadService";
-import { getDocsReadV2Service, registerDocsReadV2Service } from "./services/docs/getDocsReadV2Service";
+import { getDocsReadV2Service } from "./services/docs/getDocsReadV2Service";
 import { getDocsWriteService } from "./services/docs/getDocsWriteService";
 import { getDocsWriteV2Service } from "./services/docs/getDocsWriteV2Service";
 
@@ -48,7 +48,7 @@ async function main() {
                 },
                 v2: {
                     read: {
-                        _root: getDocsReadV2Service(),
+                        _root: getDocsReadV2Service(prisma, s3Utils),
                     },
                     write: {
                         _root: getDocsWriteV2Service(prisma, authUtils, s3Utils, config),
@@ -66,9 +66,6 @@ async function main() {
                 },
             },
         });
-
-        // manually register read docs v2 to avoid zurg's slowness
-        registerDocsReadV2Service(app, prisma, s3Utils);
 
         console.log(`Listening for requests on port ${PORT}`);
         app.listen(PORT);

@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { FernRegistry } from "../../generated";
 import { DomainNotRegisteredError } from "../../generated/api/resources/docs/resources/v1/resources/read";
 import { ReadService } from "../../generated/api/resources/docs/resources/v1/resources/read/service/ReadService";
-import * as FernSerializers from "../../generated/serialization";
 import { S3Utils } from "../../S3Utils";
 import { readBuffer } from "../../serdeUtils";
 import { convertDbApiDefinitionToRead } from "../api/getApiReadService";
@@ -9,12 +9,10 @@ import { convertDbApiDefinitionToRead } from "../api/getApiReadService";
 export function getDocsReadService(prisma: PrismaClient, s3Utils: S3Utils): ReadService {
     return new ReadService({
         getDocsForDomainLegacy: async (req, res) => {
-            const rawDocs = await getDocsForDomain({ domain: req.params.domain, prisma, s3Utils });
-            return res.send(await FernSerializers.docs.v1.read.DocsDefinition.parseOrThrow(rawDocs));
+            return res.send(await getDocsForDomain({ domain: req.params.domain, prisma, s3Utils }));
         },
         getDocsForDomain: async (req, res) => {
-            const rawDocs = await getDocsForDomain({ domain: req.body.domain, prisma, s3Utils });
-            return res.send(await FernSerializers.docs.v1.read.DocsDefinition.parseOrThrow(rawDocs));
+            return res.send(await getDocsForDomain({ domain: req.body.domain, prisma, s3Utils }));
         },
     });
 }
@@ -27,7 +25,7 @@ export async function getDocsForDomain({
     domain: string;
     prisma: PrismaClient;
     s3Utils: S3Utils;
-}): Promise<FernSerializers.docs.v1.read.DocsDefinition.Raw> {
+}): Promise<FernRegistry.docs.v1.read.DocsDefinition> {
     const docs = await prisma.docs.findFirst({
         where: {
             url: domain,
@@ -46,10 +44,10 @@ export async function getDocsDefinition({
     prisma,
     s3Utils,
 }: {
-    docsDbDefinition: FernSerializers.docs.v1.db.DocsDefinitionDb.Raw;
+    docsDbDefinition: FernRegistry.docs.v1.db.DocsDefinitionDb;
     prisma: PrismaClient;
     s3Utils: S3Utils;
-}): Promise<FernSerializers.docs.v1.read.DocsDefinition.Raw> {
+}): Promise<FernRegistry.docs.v1.read.DocsDefinition> {
     const apiDefinitions = await prisma.apiDefinitionsV2.findMany({
         where: {
             apiDefinitionId: {
@@ -86,10 +84,10 @@ export async function getDocsDefinition({
     };
 }
 
-export function migrateDocsDbDefinition(dbValue: unknown): FernSerializers.docs.v1.db.DocsDefinitionDb.Raw {
+export function migrateDocsDbDefinition(dbValue: unknown): FernRegistry.docs.v1.db.DocsDefinitionDb {
     return {
         // default to v1, but this will be overwritten if dbValue has "type" defined
         type: "v1",
         ...(dbValue as object),
-    } as FernSerializers.docs.v1.db.DocsDefinitionDb.Raw;
+    } as FernRegistry.docs.v1.db.DocsDefinitionDb;
 }

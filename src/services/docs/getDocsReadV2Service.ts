@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { Express, Response } from "express";
 import { DomainNotRegisteredError } from "../../generated/api/resources/docs/resources/v1/resources/read/errors/DomainNotRegisteredError";
 import { ReadService as ReadV2Service } from "../../generated/api/resources/docs/resources/v2/resources/read/service/ReadService";
 import { getParsedUrl } from "../../getParsedUrl";
@@ -9,66 +8,45 @@ import { getDocsDefinition, getDocsForDomain, migrateDocsDbDefinition } from "./
 
 const DOCS_DOMAIN_REGX = /^([^.\s]+)/;
 
-export function getDocsReadV2Service(): ReadV2Service {
-    return new ReadV2Service({});
-}
-
-export function registerDocsReadV2Service(app: Express, prisma: PrismaClient, s3Utils: S3Utils): void {
-    const service = new DocsReadV2Service(prisma, s3Utils);
-
-    // manually register read docs v2 to avoid zurg's slowness
-    app.post("/v2/registry/docs/load-with-url", async (req, res) => {
-        await service.getDocsForUrl(req.body.url, res);
-    });
-}
-
-export class DocsReadV2Service {
-    constructor(private readonly prisma: PrismaClient, private readonly s3Utils: S3Utils) {}
-
-    public async getDocsForUrl(url: string, res: Response) {
-        const parsedUrl = getParsedUrl(url);
-        const possibleDocs = await this.prisma.docsV2.findMany({
-            where: {
-                domain: parsedUrl.hostname,
-            },
-            orderBy: {
-                updatedTime: "desc",
-            },
-        });
-        const docsDomain = possibleDocs.find((registeredDocs) => {
-            return parsedUrl.pathname.startsWith(registeredDocs.path);
-        });
-        if (docsDomain != null) {
-            const docsDbDefinition = migrateDocsDbDefinition(readBuffer(docsDomain.docsDefinition));
-            res.send({
-                baseUrl: {
-                    domain: docsDomain.domain,
-                    basePath: docsDomain.path === "" ? undefined : docsDomain.path,
+export function getDocsReadV2Service(prisma: PrismaClient, s3Utils: S3Utils): ReadV2Service {
+    return new ReadV2Service({
+        getDocsForUrl: async (req, res) => {
+            const parsedUrl = getParsedUrl(req.body.url);
+            const possibleDocs = await prisma.docsV2.findMany({
+                where: {
+                    domain: parsedUrl.hostname,
                 },
-                definition: await getDocsDefinition({
-                    docsDbDefinition,
-                    prisma: this.prisma,
-                    s3Utils: this.s3Utils,
-                }),
+                orderBy: {
+                    updatedTime: "desc",
+                },
             });
-        } else {
-            // delegate to V1
-            const v1Domain = parsedUrl.hostname.match(DOCS_DOMAIN_REGX)?.[1];
-            if (v1Domain == null) {
-                new DomainNotRegisteredError().send(res);
+            const docsDomain = possibleDocs.find((registeredDocs) => {
+                return parsedUrl.pathname.startsWith(registeredDocs.path);
+            });
+            if (docsDomain != null) {
+                const docsDefinitionJson = readBuffer(docsDomain.docsDefinition);
+                const docsDbDefinition = migrateDocsDbDefinition(docsDefinitionJson);
+                return res.send({
+                    baseUrl: {
+                        domain: docsDomain.domain,
+                        basePath: docsDomain.path === "" ? undefined : docsDomain.path,
+                    },
+                    definition: await getDocsDefinition({ docsDbDefinition, prisma, s3Utils }),
+                });
             } else {
-                res.send({
+                // delegate to V1
+                const v1Domain = parsedUrl.hostname.match(DOCS_DOMAIN_REGX)?.[1];
+                if (v1Domain == null) {
+                    throw new DomainNotRegisteredError();
+                }
+                return res.send({
                     baseUrl: {
                         domain: parsedUrl.hostname,
                         basePath: undefined,
                     },
-                    definition: await getDocsForDomain({
-                        domain: v1Domain,
-                        prisma: this.prisma,
-                        s3Utils: this.s3Utils,
-                    }),
+                    definition: await getDocsForDomain({ domain: v1Domain, prisma, s3Utils }),
                 });
             }
-        }
-    }
+        },
+    });
 }
