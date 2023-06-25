@@ -1,4 +1,3 @@
-import { marked } from "marked";
 import { WithoutQuestionMarks } from "../../../WithoutQuestionMarks";
 import { FernRegistry } from "../../../generated";
 
@@ -37,7 +36,7 @@ function transformSubpackage({
         pointsTo: dbShape.pointsTo,
         urlSlug: dbShape.urlSlug,
         description: dbShape.description,
-        html: dbShape.html,
+        htmlDescription: dbShape.htmlDescription,
     };
 }
 
@@ -60,7 +59,7 @@ function transformEndpoint({
         response: dbShape.response,
         examples: dbShape.examples,
         description: dbShape.description,
-        html: dbShape.html,
+        htmlDescription: dbShape.htmlDescription,
         authed: dbShape.authed ?? false,
     };
 }

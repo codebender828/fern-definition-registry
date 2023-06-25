@@ -75,7 +75,7 @@ function transformSubpackage({
         pointsTo: writeShape.pointsTo,
         urlSlug: kebabCase(writeShape.name),
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
     };
 }
 
@@ -115,7 +115,7 @@ function transformEndpoint({
             })
         ),
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         authed: writeShape.auth,
     };
 }
@@ -129,7 +129,7 @@ export function transformExampleEndpointCall({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.ExampleEndpointCall> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         path: writeShape.path,
         pathParameters: writeShape.pathParameters,
         queryParameters: writeShape.queryParameters,
@@ -152,7 +152,7 @@ function transformTypeDefinition({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.TypeDefinition> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         name: writeShape.name,
         shape: transformShape({ writeShape: writeShape.shape }),
     };
@@ -205,7 +205,7 @@ function transformProperty({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.ObjectProperty> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         key: writeShape.key,
         valueType: writeShape.valueType,
     };
@@ -218,7 +218,7 @@ function transformEnumValue({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.EnumValue> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         value: writeShape.value,
     };
 }
@@ -230,7 +230,7 @@ function transformDiscriminatedVariant({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.DiscriminatedUnionVariant> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         discriminantValue: writeShape.discriminantValue,
         additionalProperties: {
             extends: writeShape.additionalProperties.extends,
@@ -248,9 +248,13 @@ function transformUnDiscriminatedVariant({
 }): WithoutQuestionMarks<FernRegistry.api.v1.read.UndiscriminatedUnionVariant> {
     return {
         description: writeShape.description,
-        html: writeShape.description != null ? marked(writeShape.description) : undefined,
+        htmlDescription: getHtmlDescription(writeShape.description),
         type: writeShape.type,
     };
+}
+
+function getHtmlDescription(description: string | undefined): string | undefined {
+    return description != null ? marked(description, { mangle: false, headerIds: false }) : undefined;
 }
 
 function entries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
