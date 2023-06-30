@@ -1,3 +1,4 @@
+import algolia, { type SearchClient } from "algoliasearch";
 import { v4 as uuid } from "uuid";
 import type { FdrServerApplication } from "./FdrServerApplication";
 import type { FernRegistry } from "./generated";
@@ -15,14 +16,23 @@ export interface AlgoliaUtils {
     buildRecordsForDocs(
         docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>
     ): Promise<AlgoliaRecord[]>;
+
+    deleteIndex(indexName: string): Promise<void>;
+
+    indexRecords(indexName: string, records: AlgoliaRecord[]): Promise<void>;
 }
 
 export class AlgoliaUtilsImpl implements AlgoliaUtils {
+    private readonly client: SearchClient;
+
     private get db() {
         return this.app.services.db;
     }
 
-    public constructor(private readonly app: FdrServerApplication) {}
+    public constructor(private readonly app: FdrServerApplication) {
+        const { config } = app;
+        this.client = algolia(config.algoliaAppId, config.algoliaAdminApiKey);
+    }
 
     public async buildRecordsForDocs(
         docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>
@@ -101,5 +111,13 @@ export class AlgoliaUtilsImpl implements AlgoliaUtils {
             });
         });
         return records;
+    }
+
+    public async deleteIndex(indexName: string) {
+        await this.client.initIndex(indexName).delete();
+    }
+
+    public async indexRecords(indexName: string, records: AlgoliaRecord[]) {
+        await this.client.initIndex(indexName).saveObjects(records).wait();
     }
 }
