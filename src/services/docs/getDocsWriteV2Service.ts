@@ -134,7 +134,7 @@ export function getDocsWriteV2Service(
                                 docsDefinition: bufferDocsDefinition,
                                 apiName: docsRegistrationInfo.apiId,
                                 orgID: docsRegistrationInfo.orgId,
-                                ...(docs.algoliaIndex === null ? { algoliaIndex: algoliaIndexCandidate } : {}),
+                                algoliaIndex: docs.algoliaIndex == null ? algoliaIndexCandidate : docs.algoliaIndex,
                             },
                         });
                         return { algoliaIndex: docs.algoliaIndex ?? algoliaIndexCandidate };
