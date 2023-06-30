@@ -95,8 +95,7 @@ export class AlgoliaUtilsImpl implements AlgoliaUtils {
         const apiUrlSlug = cumulativeSlugs.join("/");
         const { subpackages } = apiDef;
         const records: AlgoliaRecord[] = [];
-        Object.keys(subpackages).forEach((subpackageId) => {
-            const subpackage = subpackages[subpackageId]!;
+        Object.values(subpackages).forEach((subpackage) => {
             subpackage.endpoints.forEach((endpoint) => {
                 if (endpoint.name || endpoint.description) {
                     const path = [apiUrlSlug, subpackage.urlSlug, endpoint.urlSlug].join("/");
