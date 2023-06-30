@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import { AuthUtilsImpl } from "./AuthUtils";
 import { getConfig } from "./config";
+import { FdrServerApplication } from "./FdrServerApplication";
 import { register } from "./generated";
 import { S3UtilsImpl } from "./S3Utils";
 import { getReadApiService } from "./services/api/getApiReadService";
@@ -20,13 +21,15 @@ async function main() {
     try {
         const config = getConfig();
 
-        const app = express();
+        const expressApp = express();
 
-        app.use(cors());
+        expressApp.use(cors());
 
-        app.get("/health", (_req, res) => {
+        expressApp.get("/health", (_req, res) => {
             res.sendStatus(200);
         });
+
+        const app = new FdrServerApplication(config);
 
         const prisma = new PrismaClient({
             log: ["info", "warn", "error"],
@@ -35,8 +38,8 @@ async function main() {
         const authUtils = new AuthUtilsImpl(config);
         const s3Utils = new S3UtilsImpl(config);
 
-        app.use(express.json({ limit: "50mb" }));
-        register(app, {
+        expressApp.use(express.json({ limit: "50mb" }));
+        register(expressApp, {
             docs: {
                 v1: {
                     read: {
@@ -51,7 +54,7 @@ async function main() {
                         _root: getDocsReadV2Service(prisma, s3Utils),
                     },
                     write: {
-                        _root: getDocsWriteV2Service(prisma, authUtils, s3Utils, config),
+                        _root: getDocsWriteV2Service(app, prisma, authUtils, s3Utils, config),
                     },
                 },
             },
@@ -68,7 +71,7 @@ async function main() {
         });
 
         console.log(`Listening for requests on port ${PORT}`);
-        app.listen(PORT);
+        expressApp.listen(PORT);
     } catch (e) {
         console.error("Server failed to start...", e);
     }

@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
+import { type FdrServerApplication } from "src/FdrServerApplication";
 import { v4 as uuidv4 } from "uuid";
 import { AuthUtils } from "../../AuthUtils";
 import { FdrConfig } from "../../config";
@@ -62,6 +63,7 @@ function validateCustomDomains({ customDomains }: { customDomains: string[] }): 
 }
 
 export function getDocsWriteV2Service(
+    app: FdrServerApplication,
     prisma: PrismaClient,
     authUtils: AuthUtils,
     s3Utils: S3Utils,
@@ -112,52 +114,85 @@ export function getDocsWriteV2Service(
                 ).join(", ")}`
             );
             const bufferDocsDefinition = writeBuffer(dbDocsDefinition);
-            await prisma.$transaction(async (tx) => {
-                await tx.docsV2.upsert({
-                    where: {
-                        domain_path: {
+
+            const { algoliaIndex } = await prisma.$transaction(async (tx) => {
+                const writeOriginalDocs = async () => {
+                    const docs = await tx.docsV2.findFirst({
+                        where: {
                             domain: docsRegistrationInfo.fernDomain,
                             path: "",
                         },
-                    },
-                    create: {
-                        docsDefinition: bufferDocsDefinition,
-                        domain: docsRegistrationInfo.fernDomain,
-                        path: "",
-                        apiName: docsRegistrationInfo.apiId,
-                        orgID: docsRegistrationInfo.orgId,
-                    },
-                    update: {
-                        docsDefinition: bufferDocsDefinition,
-                        apiName: docsRegistrationInfo.apiId,
-                        orgID: docsRegistrationInfo.orgId,
-                    },
-                });
-                await Promise.all(
-                    docsRegistrationInfo.customDomains.map(async (customDomain) => {
-                        await tx.docsV2.upsert({
+                    });
+                    const algoliaIndexCandidate = uuidv4();
+                    if (docs) {
+                        await tx.docsV2.updateMany({
                             where: {
-                                domain_path: {
-                                    domain: customDomain.hostname,
-                                    path: customDomain.path,
-                                },
+                                domain: docsRegistrationInfo.fernDomain,
+                                path: "",
                             },
-                            create: {
-                                docsDefinition: bufferDocsDefinition,
-                                domain: customDomain.hostname,
-                                path: customDomain.path,
-                                apiName: docsRegistrationInfo.apiId,
-                                orgID: docsRegistrationInfo.orgId,
-                            },
-                            update: {
+                            data: {
                                 docsDefinition: bufferDocsDefinition,
                                 apiName: docsRegistrationInfo.apiId,
                                 orgID: docsRegistrationInfo.orgId,
+                                ...(docs.algoliaIndex === null ? { algoliaIndex: algoliaIndexCandidate } : {}),
                             },
                         });
-                    })
-                );
+                        return { algoliaIndex: docs.algoliaIndex ?? algoliaIndexCandidate };
+                    } else {
+                        await tx.docsV2.create({
+                            data: {
+                                docsDefinition: bufferDocsDefinition,
+                                domain: docsRegistrationInfo.fernDomain,
+                                path: "",
+                                apiName: docsRegistrationInfo.apiId,
+                                orgID: docsRegistrationInfo.orgId,
+                                algoliaIndex: algoliaIndexCandidate,
+                            },
+                        });
+                        return { algoliaIndex: algoliaIndexCandidate };
+                    }
+                };
+
+                const writeCustomDomainDocs = async (algoliaIndex: string) => {
+                    await Promise.all(
+                        docsRegistrationInfo.customDomains.map(async (customDomain) => {
+                            await tx.docsV2.upsert({
+                                where: {
+                                    domain_path: {
+                                        domain: customDomain.hostname,
+                                        path: customDomain.path,
+                                    },
+                                },
+                                create: {
+                                    docsDefinition: bufferDocsDefinition,
+                                    domain: customDomain.hostname,
+                                    path: customDomain.path,
+                                    apiName: docsRegistrationInfo.apiId,
+                                    orgID: docsRegistrationInfo.orgId,
+                                    algoliaIndex,
+                                },
+                                update: {
+                                    docsDefinition: bufferDocsDefinition,
+                                    apiName: docsRegistrationInfo.apiId,
+                                    orgID: docsRegistrationInfo.orgId,
+                                    algoliaIndex,
+                                },
+                            });
+                        })
+                    );
+                };
+
+                const { algoliaIndex } = await writeOriginalDocs();
+                await writeCustomDomainDocs(algoliaIndex);
+
+                return { algoliaIndex };
             });
+
+            const [records] = await Promise.all([
+                app.services.algolia.buildRecordsForDocs(dbDocsDefinition),
+                app.services.algolia.deleteIndex(algoliaIndex),
+            ]);
+            await app.services.algolia.indexRecords(algoliaIndex, records);
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete DOCS_REGISTRATIONS[req.params.docsRegistrationId];

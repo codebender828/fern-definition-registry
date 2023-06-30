@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import http from "http";
+import { FdrServerApplication } from "src/FdrServerApplication";
 import { AuthUtils } from "../../AuthUtils";
 import { FdrConfig } from "../../config";
 import { register } from "../../generated";
@@ -45,6 +46,7 @@ beforeAll(async () => {
         algoliaAppId: "",
         algoliaAdminApiKey: "",
     };
+    const serverApp = new FdrServerApplication(config);
     const s3Utils = new S3UtilsImpl(config);
     register(app, {
         docs: {
@@ -54,7 +56,7 @@ beforeAll(async () => {
             },
             v2: {
                 read: { _root: getDocsReadV2Service(prisma, s3Utils) },
-                write: { _root: getDocsWriteV2Service(prisma, authUtils, s3Utils, config) },
+                write: { _root: getDocsWriteV2Service(serverApp, prisma, authUtils, s3Utils, config) },
             },
         },
         api: {
