@@ -42,6 +42,8 @@ beforeAll(async () => {
         venusUrl: "",
         s3UrlOverride: "http://s3-mock:9090",
         domainSuffix: ".docs.buildwithfern.com",
+        algoliaAppId: "",
+        algoliaAdminApiKey: "",
     };
     const s3Utils = new S3UtilsImpl(config);
     register(app, {
