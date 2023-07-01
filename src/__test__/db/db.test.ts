@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import http from "http";
-import { FdrApplication } from "src/app";
-import { type FdrConfig } from "../../app";
+import { FdrApplication, type FdrConfig } from "../../app";
 import { getReadApiService } from "../../controllers/api/getApiReadService";
 import { getRegisterApiService } from "../../controllers/api/getRegisterApiService";
 import { getDocsReadService } from "../../controllers/docs/getDocsReadService";
