@@ -1,8 +1,8 @@
 import algolia, { type SearchClient } from "algoliasearch";
 import { v4 as uuid } from "uuid";
-import type { FdrServerApplication } from "./FdrServerApplication";
-import type { FernRegistry } from "./generated";
-import { WithoutQuestionMarks } from "./WithoutQuestionMarks";
+import type { FdrApplication } from "../app";
+import type { FernRegistry } from "../generated";
+import { type WithoutQuestionMarks } from "../util";
 
 // TODO: Generate this with Fern and share it with the frontend project
 interface AlgoliaRecord {
@@ -15,7 +15,7 @@ interface AlgoliaRecord {
 
 type ApiDefinitionLoader = (apiDefinitionId: string) => Promise<FernRegistry.api.v1.db.DbApiDefinition | null>;
 
-export interface AlgoliaUtils {
+export interface AlgoliaService {
     buildRecordsForDocs(
         docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>,
         loadApiDefinition: ApiDefinitionLoader
@@ -26,10 +26,10 @@ export interface AlgoliaUtils {
     indexRecords(indexName: string, records: AlgoliaRecord[]): Promise<void>;
 }
 
-export class AlgoliaUtilsImpl implements AlgoliaUtils {
+export class AlgoliaServiceImpl implements AlgoliaService {
     private readonly client: SearchClient;
 
-    public constructor(app: FdrServerApplication) {
+    public constructor(app: FdrApplication) {
         const { config } = app;
         this.client = algolia(config.algoliaAppId, config.algoliaAdminApiKey);
     }

@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import type { FernRegistry } from "./generated";
+import type { FernRegistry } from "../generated";
 
-export interface DatabaseUtils {
+export interface DatabaseService {
+    readonly prisma: PrismaClient;
+
     getApiDefinition(id: string): Promise<FernRegistry.api.v1.db.DbApiDefinition | null>;
 }
 
-export class DatabaseUtilsImpl implements DatabaseUtils {
+export class DatabaseServiceImpl implements DatabaseService {
     public readonly prisma: PrismaClient;
 
     public constructor() {

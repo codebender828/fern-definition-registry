@@ -1,17 +1,13 @@
-import { type PrismaClient } from "@prisma/client";
-import { type FdrServerApplication } from "src/FdrServerApplication";
+import { type FdrApplication } from "src/app";
 import { v4 as uuidv4 } from "uuid";
-import { AuthUtils } from "../../AuthUtils";
-import { FdrConfig } from "../../config";
 import { ApiId, OrgId } from "../../generated/api";
 import { DocsRegistrationId, FilePath } from "../../generated/api/resources/docs/resources/v1/resources/write";
 import { DocsRegistrationIdNotFound } from "../../generated/api/resources/docs/resources/v1/resources/write/errors/DocsRegistrationIdNotFound";
 import { InvalidCustomDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidCustomDomainError";
 import { InvalidDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidDomainError";
 import { WriteService } from "../../generated/api/resources/docs/resources/v2/resources/write/service/WriteService";
-import { getParsedUrl } from "../../getParsedUrl";
-import { S3FileInfo, S3Utils } from "../../S3Utils";
-import { writeBuffer } from "../../serdeUtils";
+import { type S3FileInfo } from "../../services/S3Service";
+import { getParsedUrl, writeBuffer } from "../../util";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
 
 const DOCS_REGISTRATIONS: Record<DocsRegistrationId, DocsRegistrationInfo> = {};
@@ -24,9 +20,9 @@ interface DocsRegistrationInfo {
     s3FileInfos: Record<FilePath, S3FileInfo>;
 }
 
-function validateDocsDomain({ domain, config }: { domain: string; config: FdrConfig }): string {
+function validateDocsDomain({ app, domain }: { app: FdrApplication; domain: string }): string {
     const parsedUrl = getParsedUrl(domain);
-    if (parsedUrl.hostname.endsWith(config.domainSuffix)) {
+    if (parsedUrl.hostname.endsWith(app.config.domainSuffix)) {
         return parsedUrl.hostname;
     }
     throw new InvalidDomainError();
@@ -62,20 +58,17 @@ function validateCustomDomains({ customDomains }: { customDomains: string[] }): 
     return parsedDomains;
 }
 
-export function getDocsWriteV2Service(
-    app: FdrServerApplication,
-    prisma: PrismaClient,
-    authUtils: AuthUtils,
-    s3Utils: S3Utils,
-    config: FdrConfig
-): WriteService {
+export function getDocsWriteV2Service(app: FdrApplication): WriteService {
     return new WriteService({
         startDocsRegister: async (req, res) => {
-            await authUtils.checkUserBelongsToOrg({ authHeader: req.headers.authorization, orgId: req.body.orgId });
-            const domain = validateDocsDomain({ domain: req.body.domain, config });
+            await app.services.auth.checkUserBelongsToOrg({
+                authHeader: req.headers.authorization,
+                orgId: req.body.orgId,
+            });
+            const domain = validateDocsDomain({ app, domain: req.body.domain });
             const customDomains = validateCustomDomains({ customDomains: req.body.customDomains });
             const docsRegistrationId = uuidv4();
-            const s3FileInfos = await s3Utils.getPresignedUploadUrls({
+            const s3FileInfos = await app.services.s3.getPresignedUploadUrls({
                 domain: req.body.domain,
                 filepaths: req.body.filepaths,
             });
@@ -100,7 +93,7 @@ export function getDocsWriteV2Service(
             if (docsRegistrationInfo == null) {
                 throw new DocsRegistrationIdNotFound();
             }
-            await authUtils.checkUserBelongsToOrg({
+            await app.services.auth.checkUserBelongsToOrg({
                 authHeader: req.headers.authorization,
                 orgId: docsRegistrationInfo.orgId,
             });
@@ -115,7 +108,7 @@ export function getDocsWriteV2Service(
             );
             const bufferDocsDefinition = writeBuffer(dbDocsDefinition);
 
-            const { algoliaIndex } = await prisma.$transaction(async (tx) => {
+            const { algoliaIndex } = await app.services.db.prisma.$transaction(async (tx) => {
                 const writeOriginalDocs = async () => {
                     const docs = await tx.docsV2.findFirst({
                         where: {
