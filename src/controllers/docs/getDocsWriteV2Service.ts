@@ -7,6 +7,7 @@ import { InvalidCustomDomainError } from "../../generated/api/resources/docs/res
 import { InvalidDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidDomainError";
 import { WriteService } from "../../generated/api/resources/docs/resources/v2/resources/write/service/WriteService";
 import { type S3FileInfo } from "../../services/S3Service";
+import { getAlgoliaRecords } from "../../services/algolia/getAlgoliaRecords";
 import { getParsedUrl, writeBuffer } from "../../util";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
 
@@ -182,9 +183,7 @@ export function getDocsWriteV2Service(app: FdrApplication): WriteService {
             });
 
             const [records] = await Promise.all([
-                app.services.algolia.buildRecordsForDocs(dbDocsDefinition, (id) =>
-                    app.services.db.getApiDefinition(id)
-                ),
+                getAlgoliaRecords(dbDocsDefinition, (id) => app.services.db.getApiDefinition(id)),
                 app.services.algolia.deleteIndex(algoliaIndex),
             ]);
             await app.services.algolia.indexRecords(algoliaIndex, records);

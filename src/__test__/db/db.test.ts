@@ -9,6 +9,7 @@ import { getDocsReadV2Service } from "../../controllers/docs/getDocsReadV2Servic
 import { getDocsWriteService } from "../../controllers/docs/getDocsWriteService";
 import { getDocsWriteV2Service } from "../../controllers/docs/getDocsWriteV2Service";
 import { register } from "../../generated";
+import { type AlgoliaRecord, type AlgoliaService } from "../../services/AlgoliaService";
 import { type AuthService } from "../../services/AuthService";
 import { FernRegistry, FernRegistryClient } from "../generated";
 
@@ -16,6 +17,18 @@ const PORT = 9999;
 
 class MockAuthService implements AuthService {
     async checkUserBelongsToOrg(): Promise<void> {
+        return;
+    }
+}
+
+class MockAlgoliaService implements AlgoliaService {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async deleteIndex(_indexName: string): Promise<void> {
+        return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async indexRecords(_indexName: string, _records: AlgoliaRecord[]): Promise<void> {
         return;
     }
 }
@@ -45,6 +58,7 @@ beforeAll(async () => {
     };
     const serverApp = new FdrApplication(config, {
         auth: new MockAuthService(),
+        algolia: new MockAlgoliaService(),
     });
     register(app, {
         docs: {
