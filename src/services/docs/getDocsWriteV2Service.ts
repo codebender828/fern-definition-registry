@@ -189,7 +189,9 @@ export function getDocsWriteV2Service(
             });
 
             const [records] = await Promise.all([
-                app.services.algolia.buildRecordsForDocs(dbDocsDefinition),
+                app.services.algolia.buildRecordsForDocs(dbDocsDefinition, (id) =>
+                    app.services.db.getApiDefinition(id)
+                ),
                 app.services.algolia.deleteIndex(algoliaIndex),
             ]);
             await app.services.algolia.indexRecords(algoliaIndex, records);

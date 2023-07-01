@@ -4,6 +4,7 @@ import type { FdrServerApplication } from "./FdrServerApplication";
 import type { FernRegistry } from "./generated";
 import { WithoutQuestionMarks } from "./WithoutQuestionMarks";
 
+// TODO: Generate this with Fern and share it with the frontend project
 interface AlgoliaRecord {
     objectID: string;
     type: "page" | "endpoint";
@@ -12,9 +13,12 @@ interface AlgoliaRecord {
     path: string;
 }
 
+type ApiDefinitionLoader = (apiDefinitionId: string) => Promise<FernRegistry.api.v1.db.DbApiDefinition | null>;
+
 export interface AlgoliaUtils {
     buildRecordsForDocs(
-        docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>
+        docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>,
+        loadApiDefinition: ApiDefinitionLoader
     ): Promise<AlgoliaRecord[]>;
 
     deleteIndex(indexName: string): Promise<void>;
@@ -25,21 +29,18 @@ export interface AlgoliaUtils {
 export class AlgoliaUtilsImpl implements AlgoliaUtils {
     private readonly client: SearchClient;
 
-    private get db() {
-        return this.app.services.db;
-    }
-
-    public constructor(private readonly app: FdrServerApplication) {
+    public constructor(app: FdrServerApplication) {
         const { config } = app;
         this.client = algolia(config.algoliaAppId, config.algoliaAdminApiKey);
     }
 
     public async buildRecordsForDocs(
-        docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>
+        docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>,
+        loadApiDefinition: (apiDefinitionId: string) => Promise<FernRegistry.api.v1.db.DbApiDefinition | null>
     ) {
         const records = await Promise.all(
             docsDefinition.config.navigation.items.map((item) =>
-                this.buildRecordsForNavigationItem(docsDefinition, [], [], item)
+                this.buildRecordsForNavigationItem(docsDefinition, loadApiDefinition, [], [], item)
             )
         );
         return records.flat(1);
@@ -47,6 +48,7 @@ export class AlgoliaUtilsImpl implements AlgoliaUtils {
 
     private async buildRecordsForNavigationItem(
         docsDefinition: WithoutQuestionMarks<FernRegistry.docs.v1.db.DocsDefinitionDb.V2>,
+        loadApiDefinition: ApiDefinitionLoader,
         cumulativeSlugs: string[],
         cumulativeRecords: AlgoliaRecord[],
         item: FernRegistry.docs.v1.read.NavigationItem
@@ -57,6 +59,7 @@ export class AlgoliaUtilsImpl implements AlgoliaUtils {
                 section.items.map(async (item) => {
                     return await this.buildRecordsForNavigationItem(
                         docsDefinition,
+                        loadApiDefinition,
                         [...cumulativeSlugs, section.urlSlug],
                         cumulativeRecords,
                         item
@@ -66,7 +69,7 @@ export class AlgoliaUtilsImpl implements AlgoliaUtils {
         } else if (item.type === "api") {
             const api = item;
             const apiId = api.api;
-            const apiDef = await this.db.getApiDefinition(apiId);
+            const apiDef = await loadApiDefinition(apiId);
             if (apiDef) {
                 const apiRecords = this.buildRecordsForApiDefinition([...cumulativeSlugs, item.urlSlug], apiDef);
                 cumulativeRecords.push(...apiRecords);
