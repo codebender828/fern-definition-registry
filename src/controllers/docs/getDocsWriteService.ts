@@ -5,7 +5,7 @@ import { DocsRegistrationIdNotFound } from "../../generated/api/resources/docs/r
 import { WriteService } from "../../generated/api/resources/docs/resources/v1/resources/write/service/WriteService";
 import { type S3FileInfo } from "../../services/S3Service";
 import { writeBuffer } from "../../util";
-import type { FdrApplication } from "../app";
+import type { FdrApplication } from "../../app";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
 
 const DOCS_REGISTRATIONS: Record<DocsRegistrationId, DocsRegistrationInfo> = {};

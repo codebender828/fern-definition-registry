@@ -3,7 +3,7 @@ import { DomainNotRegisteredError } from "../../generated/api/resources/docs/res
 import { ReadService } from "../../generated/api/resources/docs/resources/v1/resources/read/service/ReadService";
 import { readBuffer } from "../../util";
 import { convertDbApiDefinitionToRead } from "../api/getApiReadService";
-import type { FdrApplication } from "../app";
+import type { FdrApplication } from "../../app";
 
 export function getDocsReadService(app: FdrApplication): ReadService {
     return new ReadService({
