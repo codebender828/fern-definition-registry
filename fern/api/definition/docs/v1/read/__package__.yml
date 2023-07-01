@@ -166,6 +166,20 @@ types:
       name: string
       url: string
 
+  AlgoliaRecordType:
+    enum:
+      - endpoint
+      - page
+
+  AlgoliaRecord:
+    audiences:
+      - read
+    properties:
+      type: AlgoliaRecordType
+      title: string
+      subtitle: string
+      path: string
+
 errors:
   DomainNotRegisteredError:
     status-code: 404
