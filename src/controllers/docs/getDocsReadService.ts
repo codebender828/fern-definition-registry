@@ -36,13 +36,12 @@ export async function getDocsForDomain({ app, domain }: { app: FdrApplication; d
         app.services.db.prisma.docsV2.findFirst({
             where: {
                 domain,
-                path: "",
             },
         }),
     ]);
 
     console.debug(__filename, "Found first docs for domain", domain);
-    if (!docs || !docsV2) {
+    if (!docs) {
         throw new DomainNotRegisteredError();
     }
     console.debug(__filename, "Reading buffer for domain", domain);
@@ -62,7 +61,7 @@ export async function getDocsDefinition({
 }: {
     app: FdrApplication;
     docsDbDefinition: FernRegistry.docs.v1.db.DocsDefinitionDb;
-    docsV2: DocsV2;
+    docsV2: DocsV2 | null;
 }): Promise<DocsInfo> {
     const apiDefinitions = await app.services.db.prisma.apiDefinitionsV2.findMany({
         where: {
@@ -72,7 +71,7 @@ export async function getDocsDefinition({
         },
     });
     return {
-        algoliaSearchIndex: docsV2.algoliaIndex,
+        algoliaSearchIndex: docsV2?.algoliaIndex ?? null,
         definition: {
             config: {
                 navigation: docsDbDefinition.config.navigation,
