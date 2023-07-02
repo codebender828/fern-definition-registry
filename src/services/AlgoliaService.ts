@@ -1,19 +1,17 @@
 import algolia, { type SearchClient } from "algoliasearch";
 import type { FdrApplication } from "../app";
+import type * as FernRegistryDocsRead from "../generated/api/resources/docs/resources/v1/resources/read";
 
-// TODO: Generate this with Fern and share it with the frontend project
-export interface AlgoliaRecord {
+type WithObjectId<T> = {
     objectID: string;
-    type: "page" | "endpoint";
-    title: string;
-    subtitle: string;
-    path: string;
-}
+} & T;
+
+export type SearchRecord = WithObjectId<FernRegistryDocsRead.AlgoliaRecord>;
 
 export interface AlgoliaService {
     deleteIndex(indexName: string): Promise<void>;
 
-    indexRecords(indexName: string, records: AlgoliaRecord[]): Promise<void>;
+    indexRecords(indexName: string, records: SearchRecord[]): Promise<void>;
 }
 
 export class AlgoliaServiceImpl implements AlgoliaService {
@@ -28,7 +26,7 @@ export class AlgoliaServiceImpl implements AlgoliaService {
         await this.client.initIndex(indexName).delete();
     }
 
-    public async indexRecords(indexName: string, records: AlgoliaRecord[]) {
+    public async indexRecords(indexName: string, records: SearchRecord[]) {
         await this.client.initIndex(indexName).saveObjects(records).wait();
     }
 }
