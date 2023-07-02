@@ -1,10 +1,8 @@
 import algolia, { type SearchClient } from "algoliasearch";
-import type { FdrApplication } from "../app";
-import type * as FernRegistryDocsRead from "../generated/api/resources/docs/resources/v1/resources/read";
+import type { FdrApplication } from "../../app";
+import type * as FernRegistryDocsRead from "../../generated/api/resources/docs/resources/v1/resources/read";
 
-type WithObjectId<T> = {
-    objectID: string;
-} & T;
+type WithObjectId<T> = { objectID: string } & T;
 
 export type SearchRecord = WithObjectId<FernRegistryDocsRead.AlgoliaRecord>;
 

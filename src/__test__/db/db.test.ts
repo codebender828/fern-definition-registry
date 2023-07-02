@@ -9,8 +9,8 @@ import { getDocsReadV2Service } from "../../controllers/docs/getDocsReadV2Servic
 import { getDocsWriteService } from "../../controllers/docs/getDocsWriteService";
 import { getDocsWriteV2Service } from "../../controllers/docs/getDocsWriteV2Service";
 import { register } from "../../generated";
-import { type AlgoliaService, type SearchRecord } from "../../services/AlgoliaService";
-import { type AuthService } from "../../services/AuthService";
+import { type AlgoliaService, type SearchRecord } from "../../services/algolia";
+import { type AuthService } from "../../services/auth";
 import { FernRegistry, FernRegistryClient } from "../generated";
 
 const PORT = 9999;

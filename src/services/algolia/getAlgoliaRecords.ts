@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 import type { FernRegistry } from "../../generated";
 import { type WithoutQuestionMarks } from "../../util";
-import { type SearchRecord } from "../AlgoliaService";
+import { type SearchRecord } from "./AlgoliaService";
 
 type ApiDefinitionLoader = (apiDefinitionId: string) => Promise<FernRegistry.api.v1.db.DbApiDefinition | null>;
 

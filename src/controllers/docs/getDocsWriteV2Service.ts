@@ -6,8 +6,8 @@ import { DocsRegistrationIdNotFound } from "../../generated/api/resources/docs/r
 import { InvalidCustomDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidCustomDomainError";
 import { InvalidDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidDomainError";
 import { WriteService } from "../../generated/api/resources/docs/resources/v2/resources/write/service/WriteService";
-import { type S3FileInfo } from "../../services/S3Service";
 import { getAlgoliaRecords } from "../../services/algolia/getAlgoliaRecords";
+import { type S3FileInfo } from "../../services/s3";
 import { getParsedUrl, writeBuffer } from "../../util";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
 
