@@ -9,7 +9,7 @@ import { getDocsReadV2Service } from "../../controllers/docs/getDocsReadV2Servic
 import { getDocsWriteService } from "../../controllers/docs/getDocsWriteService";
 import { getDocsWriteV2Service } from "../../controllers/docs/getDocsWriteV2Service";
 import { register } from "../../generated";
-import { type AlgoliaService, type SearchRecord } from "../../services/algolia";
+import { type AlgoliaSearchRecord, type AlgoliaService } from "../../services/algolia";
 import { type AuthService } from "../../services/auth";
 import { FernRegistry, FernRegistryClient } from "../generated";
 
@@ -28,7 +28,7 @@ class MockAlgoliaService implements AlgoliaService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async indexRecords(_indexName: string, _records: SearchRecord[]): Promise<void> {
+    async indexRecords(_indexName: string, _records: AlgoliaSearchRecord[]): Promise<void> {
         return;
     }
 }

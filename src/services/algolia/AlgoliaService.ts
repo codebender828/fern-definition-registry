@@ -4,12 +4,12 @@ import type * as FernRegistryDocsRead from "../../generated/api/resources/docs/r
 
 type WithObjectId<T> = { objectID: string } & T;
 
-export type SearchRecord = WithObjectId<FernRegistryDocsRead.AlgoliaRecord>;
+export type AlgoliaSearchRecord = WithObjectId<FernRegistryDocsRead.AlgoliaRecord>;
 
 export interface AlgoliaService {
     deleteIndex(indexName: string): Promise<void>;
 
-    indexRecords(indexName: string, records: SearchRecord[]): Promise<void>;
+    indexRecords(indexName: string, records: AlgoliaSearchRecord[]): Promise<void>;
 }
 
 export class AlgoliaServiceImpl implements AlgoliaService {
@@ -24,7 +24,7 @@ export class AlgoliaServiceImpl implements AlgoliaService {
         await this.client.initIndex(indexName).delete();
     }
 
-    public async indexRecords(indexName: string, records: SearchRecord[]) {
+    public async indexRecords(indexName: string, records: AlgoliaSearchRecord[]) {
         await this.client.initIndex(indexName).saveObjects(records).wait();
     }
 }

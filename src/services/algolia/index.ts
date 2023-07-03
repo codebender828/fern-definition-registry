@@ -1,1 +1,1 @@
-export { AlgoliaServiceImpl, type AlgoliaService, type SearchRecord } from "./AlgoliaService";
+export { AlgoliaServiceImpl, type AlgoliaSearchRecord, type AlgoliaService } from "./AlgoliaService";
