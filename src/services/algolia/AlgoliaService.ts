@@ -7,9 +7,9 @@ type WithObjectId<T> = { objectID: string } & T;
 export type AlgoliaSearchRecord = WithObjectId<FernRegistryDocsRead.AlgoliaRecord>;
 
 export interface AlgoliaService {
-    deleteIndex(indexName: string): Promise<void>;
+    clearIndexRecords(indexName: string): Promise<void>;
 
-    indexRecords(indexName: string, records: AlgoliaSearchRecord[]): Promise<void>;
+    saveIndexRecords(indexName: string, records: AlgoliaSearchRecord[]): Promise<void>;
 }
 
 export class AlgoliaServiceImpl implements AlgoliaService {
@@ -20,11 +20,11 @@ export class AlgoliaServiceImpl implements AlgoliaService {
         this.client = algolia(config.algoliaAppId, config.algoliaAdminApiKey);
     }
 
-    public async deleteIndex(indexName: string) {
-        await this.client.initIndex(indexName).delete();
+    public async clearIndexRecords(indexName: string) {
+        await this.client.initIndex(indexName).clearObjects().wait();
     }
 
-    public async indexRecords(indexName: string, records: AlgoliaSearchRecord[]) {
+    public async saveIndexRecords(indexName: string, records: AlgoliaSearchRecord[]) {
         await this.client.initIndex(indexName).saveObjects(records).wait();
     }
 }

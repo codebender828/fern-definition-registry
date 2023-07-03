@@ -23,12 +23,12 @@ class MockAuthService implements AuthService {
 
 class MockAlgoliaService implements AlgoliaService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async deleteIndex(_indexName: string): Promise<void> {
+    async clearIndexRecords(_indexName: string): Promise<void> {
         return;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async indexRecords(_indexName: string, _records: AlgoliaSearchRecord[]): Promise<void> {
+    async saveIndexRecords(_indexName: string, _records: AlgoliaSearchRecord[]): Promise<void> {
         return;
     }
 }

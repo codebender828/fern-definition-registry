@@ -184,9 +184,9 @@ export function getDocsWriteV2Service(app: FdrApplication): WriteService {
 
             const [records] = await Promise.all([
                 getAlgoliaRecords(dbDocsDefinition, (id) => app.services.db.getApiDefinition(id)),
-                app.services.algolia.deleteIndex(algoliaIndex),
+                app.services.algolia.clearIndexRecords(algoliaIndex),
             ]);
-            await app.services.algolia.indexRecords(algoliaIndex, records);
+            await app.services.algolia.saveIndexRecords(algoliaIndex, records);
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete DOCS_REGISTRATIONS[req.params.docsRegistrationId];
