@@ -117,7 +117,7 @@ export function getDocsWriteV2Service(app: FdrApplication): WriteService {
                             path: "",
                         },
                     });
-                    const algoliaIndexCandidate = uuidv4();
+                    const algoliaIndexCandidate = docsRegistrationInfo.fernDomain;
                     if (docs) {
                         await tx.docsV2.updateMany({
                             where: {
