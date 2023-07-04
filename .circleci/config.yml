@@ -158,6 +158,7 @@ workflows:
             - github
             - fern-prod
             - fern-tokens
+            - fdr-algolia-prod
           requires:
             - check
 
