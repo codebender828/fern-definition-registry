@@ -1,3 +1,4 @@
+import { MILLISECONDS_IN_ONE_DAY } from "src/util";
 import type { FdrApplication } from "../../app";
 
 interface DeleteOldIndicesParams {
@@ -26,7 +27,7 @@ export class CleanupServiceImpl implements CleanupService {
             take: limit,
             where: {
                 overwrittenTime: {
-                    lte: new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1_000),
+                    lte: new Date(Date.now() - olderThanDays * MILLISECONDS_IN_ONE_DAY),
                 },
             },
         });
