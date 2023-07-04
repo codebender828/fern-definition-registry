@@ -144,7 +144,7 @@ workflows:
             - github
             - fern-dev
             - fern-tokens
-            - algolia-admin-key-dev
+            - fdr-algolia-dev
 
       - deploy-prod:
           filters:
