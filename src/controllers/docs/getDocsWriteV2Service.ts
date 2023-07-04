@@ -193,13 +193,15 @@ export function getDocsWriteV2Service(app: FdrApplication): WriteService {
 
             const [{ prevDocs }] = await Promise.all([updateDbDocs(), createNewIndex()]);
 
-            const deletePreviousIndex = async () => {
+            const schedulePreviousIndexDeletion = async () => {
                 if (prevDocs?.algoliaIndex) {
-                    await app.services.algolia.scheduleIndexDeletion(prevDocs.algoliaIndex);
+                    await app.services.db.prisma.overwrittenAlgoliaIndex.create({
+                        data: { indexId: prevDocs.algoliaIndex },
+                    });
                 }
             };
 
-            await deletePreviousIndex();
+            await schedulePreviousIndexDeletion();
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete DOCS_REGISTRATIONS[req.params.docsRegistrationId];
