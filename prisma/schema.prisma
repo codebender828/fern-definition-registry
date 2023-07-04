@@ -40,9 +40,8 @@ model DocsV2 {
 }
 
 model OverwrittenAlgoliaIndex {
-  id              String   @id @default(uuid())
   overwrittenTime DateTime @default(now())
-  indexId         String
+  indexId         String   @unique
 
   @@map("overwritten_algolia_indexes")
 }
