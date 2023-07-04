@@ -1,3 +1,4 @@
+import { CleanupServiceImpl, type CleanupService } from "src/services/cleanup";
 import { AlgoliaServiceImpl, type AlgoliaService } from "../services/algolia";
 import { AuthServiceImpl, type AuthService } from "../services/auth";
 import { DatabaseServiceImpl, type DatabaseService } from "../services/db";
@@ -9,6 +10,7 @@ export interface FdrServices {
     readonly db: DatabaseService;
     readonly algolia: AlgoliaService;
     readonly s3: S3Service;
+    readonly cleanup: CleanupService;
 }
 
 export class FdrApplication {
@@ -20,6 +22,7 @@ export class FdrApplication {
             db: services?.db ?? new DatabaseServiceImpl(),
             algolia: services?.algolia ?? new AlgoliaServiceImpl(this),
             s3: services?.s3 ?? new S3ServiceImpl(this),
+            cleanup: services?.cleanup ?? new CleanupServiceImpl(this),
         };
     }
 }
