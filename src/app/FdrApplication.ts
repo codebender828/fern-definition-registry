@@ -1,5 +1,5 @@
-import { AlgoliaIndexDeleterServiceImpl, type AlgoliaIndexDeleterService } from "src/services/algolia-index-deleter";
 import { AlgoliaServiceImpl, type AlgoliaService } from "../services/algolia";
+import { AlgoliaIndexDeleterServiceImpl, type AlgoliaIndexDeleterService } from "../services/algolia-index-deleter";
 import { AuthServiceImpl, type AuthService } from "../services/auth";
 import { DatabaseServiceImpl, type DatabaseService } from "../services/db";
 import { S3ServiceImpl, type S3Service } from "../services/s3";

@@ -1,5 +1,6 @@
-import { MILLISECONDS_IN_ONE_DAY } from "src/util";
 import type { FdrApplication } from "../../app";
+
+export const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1_000;
 
 interface DeleteOldIndicesParams {
     olderThanDays?: number;
