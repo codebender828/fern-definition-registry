@@ -6,11 +6,11 @@ interface DeleteOldIndicesParams {
     limit?: number;
 }
 
-export interface CleanupService {
+export interface AlgoliaIndexDeleterService {
     deleteOldIndices(params: DeleteOldIndicesParams): Promise<number>;
 }
 
-export class CleanupServiceImpl implements CleanupService {
+export class AlgoliaIndexDeleterServiceImpl implements AlgoliaIndexDeleterService {
     private get db() {
         return this.app.services.db;
     }

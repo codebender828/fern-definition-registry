@@ -9,7 +9,7 @@ export function registerAlgoliaIndexDeletionBackgroundTask(app: FdrApplication) 
     // Runs every hour
     cron.schedule("0 * * * *", async () => {
         try {
-            const deletedIndexCount = await app.services.cleanup.deleteOldIndices({
+            const deletedIndexCount = await app.services.algoliaIndexDeleter.deleteOldIndices({
                 limit: 100,
                 olderThanDays: 2,
             });
