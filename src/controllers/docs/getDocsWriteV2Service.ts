@@ -6,7 +6,7 @@ import { DocsRegistrationIdNotFound } from "../../generated/api/resources/docs/r
 import { InvalidCustomDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidCustomDomainError";
 import { InvalidDomainError } from "../../generated/api/resources/docs/resources/v2/resources/write/errors/InvalidDomainError";
 import { WriteService } from "../../generated/api/resources/docs/resources/v2/resources/write/service/WriteService";
-import { getAlgoliaRecords } from "../../services/algolia/getAlgoliaRecords";
+import { generateAlgoliaRecords } from "../../services/algolia/generateAlgoliaRecords";
 import { type S3FileInfo } from "../../services/s3";
 import { getParsedUrl, writeBuffer } from "../../util";
 import { transformWriteDocsDefinitionToDb } from "./transformDocsDefinitionToDb";
@@ -112,7 +112,9 @@ export function getDocsWriteV2Service(app: FdrApplication): WriteService {
             const newAlgoliaIndex = `${docsRegistrationInfo.fernDomain}_${uuidv4()}`;
 
             const createNewIndex = async () => {
-                const records = await getAlgoliaRecords(dbDocsDefinition, (id) => app.services.db.getApiDefinition(id));
+                const records = await generateAlgoliaRecords(dbDocsDefinition, (id) =>
+                    app.services.db.getApiDefinition(id)
+                );
                 await app.services.algolia.saveIndexRecords(newAlgoliaIndex, records);
             };
 
