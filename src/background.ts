@@ -11,7 +11,7 @@ export function registerAlgoliaIndexDeletionBackgroundTask(app: FdrApplication) 
         try {
             const deletedIndexCount = await app.services.algoliaIndexDeleter.deleteOldIndices({
                 limit: 100,
-                olderThanDays: 2,
+                olderThanMinutes: 10,
             });
 
             console.log(`Successfully deleted ${deletedIndexCount} old indices.`);
