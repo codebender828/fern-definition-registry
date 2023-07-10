@@ -56,6 +56,7 @@ types:
     properties:
       key: PathParameterKey
       type: type.TypeReference
+      anchor: optional<string>
 
   PathParameterKey: string
 
@@ -64,6 +65,7 @@ types:
     properties:
       key: string
       type: type.TypeReference
+      anchor: optional<string>
 
   Header:
     extends: commons.WithDescription
