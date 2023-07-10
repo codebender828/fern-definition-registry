@@ -41,6 +41,7 @@ types:
     properties:
       key: string
       valueType: TypeReference
+      anchor: optional<string>
 
   PrimitiveType:
     union:

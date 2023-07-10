@@ -207,6 +207,8 @@ function transformProperty({
         htmlDescription: getHtmlDescription(writeShape.description),
         key: writeShape.key,
         valueType: writeShape.valueType,
+        // TODO: Create this dynamically
+        anchor: undefined,
     };
 }
 
