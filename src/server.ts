@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import winston from "winston";
 import { FdrApplication, getConfig } from "./app";
 import { registerBackgroundTasks } from "./background";
 import { getReadApiService } from "./controllers/api/getApiReadService";
