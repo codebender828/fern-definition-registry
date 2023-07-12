@@ -84,19 +84,18 @@ types:
       favicon: optional<FileId>
       colors: optional<ColorsConfig>
       navbarLinks: optional<list<NavbarLink>>
-      typography: optional<list<FontFamily>>
+      typography: optional<DocsTypographyConfig>
 
-  FontFamily:
+  DocsTypographyConfig:
+    properties:
+      headingsFont: FontConfig
+      bodyFont: FontConfig
+      codeFont: FontConfig
+
+  FontConfig:
     properties:
       name: string
-      type: FontFamilyType
       fontFile: FileId
-
-  FontFamilyType:
-    enum:
-      - headings
-      - body
-      - code
 
   NavbarLink:
     properties:
