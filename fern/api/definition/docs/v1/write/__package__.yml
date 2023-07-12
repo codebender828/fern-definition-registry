@@ -88,9 +88,9 @@ types:
 
   DocsTypographyConfig:
     properties:
-      headingsFont: FontConfig
-      bodyFont: FontConfig
-      codeFont: FontConfig
+      headingsFont: optional<FontConfig>
+      bodyFont: optional<FontConfig>
+      codeFont: optional<FontConfig>
 
   FontConfig:
     properties:
