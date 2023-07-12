@@ -84,6 +84,35 @@ types:
       favicon: optional<FileId>
       colors: optional<ColorsConfig>
       navbarLinks: optional<list<NavbarLink>>
+      typography: optional<list<FontFamily>>
+
+  FontFamilies:
+    properties:
+      headings:
+        type: optional<string>
+        docs: The font family applied to all headings in the docs. If this is not supplied, it defaults to the body font family.
+      body:
+        type: optional<string>
+        docs: The font family applied to all paragraph content in the docs.
+      code:
+        type: optional<string>
+        docs: The font family applied to all code blocks and inline code snippets in the documentation site.
+
+  FontFamily:
+    properties:
+      name: string
+      type: FontFamilyType
+      fontFile: FileId
+
+  FontFamilyType:
+    enum:
+      - headings
+      - body
+      - code
+
+  Typography:
+    properties:
+      fonts: optional<FontFamilies>
 
   NavbarLink:
     properties:
