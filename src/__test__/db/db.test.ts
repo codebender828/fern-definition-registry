@@ -233,12 +233,12 @@ it("docs register V2", async () => {
     });
     expect(docs.baseUrl.domain).toEqual("acme.docs.buildwithfern.com");
     expect(Object.entries(docs.definition.files)).toHaveLength(3);
-    // expect(docs.definition.config.typography).toEqual({
-    //     name: "Syne",
-    //     fontFile: fontFileId,
-    // });
-    console.log("docs", docs.definition);
-
+    expect(docs.definition.config.typography).toEqual({
+        headingsFont: {
+            name: "Syne",
+            fontFile: fontFileId,
+        },
+    });
     // load docs again
     docs = await CLIENT.docs.v2.read.getDocsForUrl({
         url: "https://docs.useacme.com/docs/1/",
